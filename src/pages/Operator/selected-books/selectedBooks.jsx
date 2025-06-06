@@ -1,9 +1,10 @@
 import './selectedBooks.css';
-import { Navbar, Sidebar } from '../../components';
+import { Navbar, Sidebar } from '../../../components';
 import { useState } from 'react';
-import Table from '../../components/shared/table/table';
-import data from '../../../data.json';
+import Table from '../../../components/shared/table/table';
+import data from '../../../../data.json';
 
+// Buku yang Ingin Dipinjam
 function SelectedBooks() {
     const [showSidebar, setShowSidebar] = useState(true);
     const [borrowList, setBorrowList] = useState(data.borrowList);
