@@ -1,0 +1,61 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 21px;
+    height: 56px;
+    background-color: #AC86BB;
+    font-size: 14px;
+    position: fixed;
+    right: 0;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+}
+
+nav .navbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+nav .logo {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 130px;
+}
+
+nav .logo img {
+    width: 30px;
+    z-index: 99;
+    float: left;
+}
+
+nav .logo span {
+    font-size: .9rem;
+    font-weight: 600;
+}
+
+.navbar {
+    /* position: relative; */
+    display: flex;
+    align-items: center;
+}
+
+.navbar .icon {
+    font-size: 1.5rem;
+    color: black;
+}
+
+.navbar  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background-color: #e6f3ff;
+    border-radius: 7px;
+    padding: 5px 10px;
+    gap: 7px;
+}
+

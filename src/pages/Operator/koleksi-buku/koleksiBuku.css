@@ -1,0 +1,99 @@
+.sidebar:not(.active)~.content {
+    margin-left: 0;
+    width: 100%;
+}
+
+#koleksiBuku input[type="text"] {
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+.btnTambahBuku {
+    margin-left: 14px;
+    border-radius: 7px;
+}
+
+
+#koleksiBuku button {
+    background-color: #AC86BB;
+    color: #f4f4f4;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+#koleksiBuku button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#koleksiBuku button:hover {
+    background-color: #AC86DD;
+}
+
+#tableBuku{
+    margin-top: 21px;
+}
+
+/* Overlay gelap saat form tampil */
+.overlayTambahBuku {
+    position: fixed;
+    top: 56px;
+    /* agar tidak menutupi navbar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    /* form diatas */
+    z-index: 1000;
+    overflow-y: auto;
+    margin-left: 200px;
+    width: calc(100% - 200px);
+}
+
+/* Container form tambah buku */
+.contentTambahBuku {
+    /* biarkan transparan, styling ada di formnya */
+    background-color: transparent;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1001;
+    border: 2px solid red;
+}
+
+.modal-sinopsis-overlay {
+    position: fixed;
+    top: 56px;
+    /* agar tidak menutupi navbar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1100;
+}
+
+.modal-sinopsis-content {
+    background-color: white;
+    padding: 20px 24px;
+    border-radius: 8px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    max-height: 70vh;
+    overflow-y: auto;
+    color: #333;
+}

@@ -1,0 +1,181 @@
+#pengembalian .form-container {
+    margin-top: 14px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+#pengembalian .form-header {
+  background-color: #8B5DFF;
+  color: white;
+  padding: 15px 20px;
+}
+
+#pengembalian .form-header h2 {
+  display: inline;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+
+#pengembalian .form-section h2 {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4C1D95;
+}
+
+#pengembalian .form-content {
+    padding: 28px;
+    background: #f8f9fa;
+}
+
+#pengembalian .form-group {
+  margin-bottom: 21px;
+}
+
+#pengembalian .form-group:last-child {
+  margin-bottom: 0;
+}
+
+#pengembalian .form-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+#pengembalian .form-control,
+#pengembalian .form-input {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid #D1D5DB;
+  border-radius: 7px;
+  font-size: 14px;
+  background-color: white;
+  color: #374151;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+
+}
+
+#pengembalian .form-control:focus {
+  outline: none;
+  border-color: #8B5DFF;
+    box-shadow: 0 0 0 3px rgba(139, 93, 255, 0.1);
+}
+
+#pengembalian .form-control option {
+  padding: 10px;
+  color: #374151;
+}
+
+#pengembalian .form-control option:first-child {
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+#pengembalian .form-actions {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  justify-content: flex-start;
+}
+
+#pengembalian .btn-kembali,
+#pengembalian .btn-batal {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#pengembalian .btn-kembali {
+  background-color: #8B5CF6;
+  color: white;
+}
+
+#pengembalian .btn-kembali:hover {
+  background-color: #7C3AED;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
+}
+
+#pengembalian .btn-batal {
+  background-color: #EF4444;
+  color: white;
+}
+
+#pengembalian .btn-batal:hover {
+  background-color: #DC2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+#pengembalian .btn-kembali:active,
+#pengembalian .btn-batal:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #pengembalian .form-container {
+    margin: 0 10px;
+    border-radius: 6px;
+  }
+  
+  #pengembalian .form-header h1 {
+    font-size: 16px;
+  }
+  
+  #pengembalian .form-section {
+    padding: 12px 15px;
+  }
+  
+  #pengembalian .form-actions {
+    padding: 15px;
+    flex-direction: column;
+  }
+  
+  #pengembalian .btn-kembali,
+  #pengembalian .btn-batal {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  #pengembalian .form-header {
+    padding: 12px 15px;
+  }
+  
+  #pengembalian .form-header h1 {
+    font-size: 14px;
+  }
+  
+  #pengembalian .form-section h2 {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  #pengembalian .form-group label {
+    font-size: 13px;
+  }
+  
+  #pengembalian .form-control {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}

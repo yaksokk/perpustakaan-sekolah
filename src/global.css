@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    list-style: none;
+}
+
+button {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+main {
+    position: relative;
+    padding: 20px;
+    margin-top: 56px;
+    transition: all 0.7s ease-in-out;
+    margin-left: 200px;
+    width: calc(100% - 200px);
+}
