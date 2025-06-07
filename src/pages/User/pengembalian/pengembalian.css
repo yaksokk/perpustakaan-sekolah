@@ -8,7 +8,7 @@
 }
 
 #pengembalian .form-header {
-  background-color: #8B5DFF;
+  background-color: #AC86BB;
   color: white;
   padding: 15px 20px;
 }
@@ -66,7 +66,7 @@
 
 #pengembalian .form-control:focus {
   outline: none;
-  border-color: #8B5DFF;
+  border-color: #AC86BB;
     box-shadow: 0 0 0 3px rgba(139, 93, 255, 0.1);
 }
 
@@ -102,7 +102,7 @@
 }
 
 #pengembalian .btn-kembali {
-  background-color: #8B5CF6;
+  background-color: #AC86BB;
   color: white;
 }
 
