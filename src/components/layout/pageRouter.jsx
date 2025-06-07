@@ -1,11 +1,13 @@
 import {
     Dashboard,
-    KoleksiBuku,
+    KoleksiBukuUser,
+    KoleksiBukuOperator,
     Peminjaman,
     Pengembalian,
     SelectedBooks,
     BorrowList,
-    ReturnedList
+    ReturnedList,
+    Users
 } from '../../pages';
 import { usePage } from '../../context';
 
@@ -47,17 +49,15 @@ function PageRouter() {
         case 'btnDashboard':
             return <Dashboard />;
         case 'btnKoleksi':
-            return <KoleksiBuku />;
+            return <KoleksiBukuOperator />;
         case 'btnPeminjaman':
             return <Peminjaman />;
         case 'btnPengembalian':
             return <Pengembalian />;
         case 'btnCetakKartu':
             return <ComingSoon title="Cetak Kartu" />;
-        case 'btnTentangKami':
-            return <ComingSoon title="Tentang Kami" />;
-        case 'btnKontak':
-            return <ComingSoon title="Kontak" />;
+        case 'btnTest':
+            return <Users title="Test" />;
         // non sidebar
         case 'btnSelectedBooks':
             return <SelectedBooks title="Selected Books" />;
