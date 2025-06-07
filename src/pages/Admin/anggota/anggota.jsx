@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { Navbar, Sidebar, Table } from "../../../components";
 import data from '../../../../data.json'
 import './anggota.css'
-import { FaCirclePlus } from "react-icons/fa6";
+import { FaCirclePlus, FaPenToSquare, FaTrash } from "react-icons/fa6";
 
 const TambahAnggota = () => {
     const [form, setForm] = useState({
         username: "",
+        password: "",
         name: "",
         profesi: "",
         role: "",
@@ -23,6 +24,7 @@ const TambahAnggota = () => {
         alert("Buku berhasil ditambahkan!");
         setForm({
             username: "",
+            password: "",
             name: "",
             profesi: "",
             role: ""
@@ -39,6 +41,15 @@ const TambahAnggota = () => {
                 name="username"
                 placeholder="Username"
                 value={form.username}
+                onChange={handleChange}
+                required
+            />
+            <label>Password</label>
+            <input
+                type="text"
+                name="password"
+                placeholder="password"
+                value={form.password}
                 onChange={handleChange}
                 required
             />
@@ -93,12 +104,44 @@ function Anggota() {
         user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const columns = [
-        { header: "No", render: (_, idx) => idx + 1 },
-        { header: "Username", accessor: "username" },
-        { header: "Name", accessor: "name" },
-        { header: "Profesi", accessor: "profesi" },
-    ]
+const columns = [
+    { header: "No", render: (_, idx) => idx + 1 },
+    { header: "Username", accessor: "username" },
+    { header: "Password", accessor: "password" },
+    { header: "Name", accessor: "name" },
+    { header: "Profesi", accessor: "profesi" },
+    {
+        header: "Aksi",
+        render: (row) => (
+            <div>
+                <button
+                    onClick={() => handleEdit(row)}
+                    style={{
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        backgroundColor: '#28a745',  // Green for Edit
+                        color: 'white',
+                        marginRight: '8px'
+                    }}
+                >
+                    <FaPenToSquare className="icon" title='Edit'/> 
+                </button>
+                <button
+                    onClick={() => handleDelete(row)}
+                    style={{
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        backgroundColor: '#dc3545',  // Red for Delete
+                        color: 'white'
+                    }}
+                >
+                    <FaTrash className="icon" title='Hapus'/> 
+                </button>
+            </div>
+        )
+    }
+];
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -111,6 +154,11 @@ function Anggota() {
         }
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [showAddUser]);
+
+    const handleToReturnClick = () => {
+        setShowAddUser(false);  // Ensure it closes the form
+    };
+
 
     return (
         <>
@@ -137,8 +185,9 @@ function Anggota() {
                         <Table columns={columns} data={filteredUsers} />
                     </div>
                     {showAddUser && (
-                        <div className="overlayAddUser">
+                        <div className="overlayAddUser" onClose={() => setShowAddUser(false)}>
                             <div id="formAddUser" ref={formRef} className="contentAddUser">
+                                <button className="close-button" onClick={handleToReturnClick}>×</button>
                                 <TambahAnggota />
                             </div>
                         </div>
