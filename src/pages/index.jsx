@@ -1,5 +1,5 @@
-import Dashboard from './dashboard/dashboard'
 import Users from './Admin/users/users'
+import Dashboard from './Operator/dashboard/dashboard'
 import BorrowList from './Operator/borrow-list/borrowList'
 import ReturnedList from './Operator/returned-list/ReturnedList'
 import SelectedBooks from './Operator/selected-books/selectedBooks'
