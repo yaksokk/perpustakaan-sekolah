@@ -5,6 +5,7 @@ import ReturnedList from './Operator/returned-list/ReturnedList'
 import SelectedBooks from './Operator/selected-books/selectedBooks'
 import Pengembalian from './User/pengembalian/pengembalian'
 import Peminjaman from './User/peminjaman/peminjaman'
+import Users from './Admin/users/users'
 export {
     Dashboard,
     KoleksiBuku,
@@ -12,5 +13,6 @@ export {
     Pengembalian,
     SelectedBooks,
     BorrowList,
-    ReturnedList
+    ReturnedList,
+    Users
 }
