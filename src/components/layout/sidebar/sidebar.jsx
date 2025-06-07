@@ -10,6 +10,7 @@ function Sidebar({ isActive }) {
         { id: 'btnDashboard', label: 'Dashboard' },
         { id: 'btnKoleksi', label: 'Koleksi Buku' },
         { id: 'btnDaftarPengguna', label: 'Daftar Anggota' },
+        { id: 'btnDaftarPetugas', label: 'Daftar Petugas' },
     ];
 
     const operatorMenu = [

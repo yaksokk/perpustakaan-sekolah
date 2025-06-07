@@ -9,7 +9,8 @@ import {
     SelectedBooks,
     BorrowList,
     ReturnedList,
-    Anggota
+    Anggota,
+    Petugas
 } from '../../pages';
 import { usePage, useAuth } from '../../context';
 
@@ -55,6 +56,7 @@ function PageSync({ children }) {
         '/dashboard': 'btnDashboard',
         '/koleksi-buku': 'btnKoleksi',
         '/daftar-anggota': 'btnDaftarPengguna',
+        '/daftar-petugas': 'btnDaftarPetugas',
         '/peminjaman': 'btnPeminjaman',
         '/pengembalian': 'btnPengembalian',
         '/selected-books': 'btnSelectedBooks',
@@ -67,6 +69,7 @@ function PageSync({ children }) {
         'btnDashboard': '/dashboard',
         'btnKoleksi': '/koleksi-buku',
         'btnDaftarPengguna': '/daftar-anggota',
+        'btnDaftarPetugas': '/daftar-petugas',
         'btnPeminjaman': '/peminjaman',
         'btnPengembalian': '/pengembalian',
         'btnSelectedBooks': '/selected-books',
@@ -125,6 +128,7 @@ function PageRouter() {
                 {user.role === 'Admin' && (
                     <>
                         <Route path="/daftar-anggota" element={<Anggota title="Daftar Anggota" />} />
+                        <Route path="/daftar-petugas" element={<Petugas title="Daftar Petugas" />} />
                         <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
                         <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
                         <Route path="/daftar-peminjam" element={<BorrowList title="Daftar Peminjam" />} />
