@@ -1,0 +1,159 @@
+#users input[type="text"] {
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+
+#users button {
+    margin-left: 14px;
+    border-radius: 7px;
+    background-color: #AC86BB;
+    color: #f4f4f4;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: 7px;
+}
+
+#users button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#users button:hover {
+    background-color: #AC86DD;
+}
+
+
+#tableUsers {
+    overflow-x: auto;
+    margin-top: 14px;
+}
+
+#tableUsers .custom-table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 600px;
+}
+
+#tableUsers .custom-table th {
+    text-align: center;
+    width: auto;
+    word-wrap: break-word;
+}
+
+#tableUsers .custom-table td {
+    width: auto;
+    word-wrap: break-word;
+    text-align: left;
+}
+
+
+#tableUsers .custom-table th:nth-child(1),
+#tableUsers .custom-table td:nth-child(1) {
+    width: 60px;
+    text-align: center;
+}
+
+
+/* Overlay gelap saat form tampil */
+.overlayAddUser {
+    position: fixed;
+    top: 56px;
+    /* agar tidak menutupi navbar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    /* form diatas */
+    z-index: 1000;
+    overflow-y: auto;
+    margin-left: 200px;
+    width: calc(100% - 200px);
+}
+
+/* Container form tambah buku */
+.contentAddUser {
+    /* biarkan transparan, styling ada di formnya */
+    background-color: transparent;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1001;
+}
+
+.form-add-user {
+    background-color: #d8c9f7;
+    padding: 16px;
+    border-radius: 4px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #2a2a2a;
+    box-sizing: border-box;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    width: 80%;
+}
+
+.form-add-user h3 {
+    background-color: #b49bf1;
+    padding: 8px 12px;
+    border-radius: 3px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.form-add-user label {
+    display: block;
+    font-weight: 600;
+    margin-top: 7px;
+    margin-bottom: 0;
+}
+
+.form-add-user input[type="text"],
+.form-add-user input[type="number"],
+.form-add-user select {
+    margin: 0;
+    width: 100%;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: none;
+    background-color: #f0e8ff;
+    font-size: 14px;
+    box-sizing: border-box;
+    color: #333;
+}
+.form-add-user select {
+    width: 50%;
+}
+
+.form-add-user input[type="text"]::placeholder,
+.form-add-user input[type="number"]::placeholder,
+.form-add-user select {
+    color: #b7a9eb;
+}
+
+.form-add-user button.btn-submit {
+    margin-top: 21px;
+    padding: 10px 20px;
+    background-color: #8b6de9;
+    border-radius: 21px;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.form-add-users button.btn-submit:hover {
+    background-color: #7a5eda;
+}
