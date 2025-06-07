@@ -3,17 +3,36 @@ import '../../../global.css';
 import { useAuth, usePage } from '../../../context';
 
 function Sidebar({ isActive }) {
-    const { user } = useAuth();
+    const { user } = useAuth();  // Mengambil informasi user dari AuthContext
     const { currentPage, navigateTo } = usePage();
-    
-    const mainMenu = [
+
+    const adminMenu = [
         { id: 'btnDashboard', label: 'Dashboard' },
         { id: 'btnKoleksi', label: 'Koleksi Buku' },
-        { id: 'btnDaftarPeminjam', label: 'Daftar Peminjam' },
+        { id: 'btnUsers', label: 'Daftar Pengguna' },
+    ];
+
+    const operatorMenu = [
+        { id: 'btnDashboard', label: 'Dashboard' },
+        { id: 'btnKoleksi', label: 'Koleksi Buku' },
+    ];
+
+    const userMenu = [
+        { id: 'btnDashboard', label: 'Dashboard' },
+        { id: 'btnKoleksi', label: 'Koleksi Buku' },
         { id: 'btnPeminjaman', label: 'Peminjaman' },
         { id: 'btnPengembalian', label: 'Pengembalian' },
-        { id: 'btnCetakKartu', label: 'Buat Kartu' },
     ];
+
+    // Tentukan menu yang akan ditampilkan berdasarkan role
+    let menuToShow = [];
+    if (user?.role === 'Admin') {
+        menuToShow = adminMenu;
+    } else if (user?.role === 'Operator') {
+        menuToShow = operatorMenu;
+    } else if (user?.role === 'User') {
+        menuToShow = userMenu;
+    }
 
     const handleMenuClick = (itemId) => {
         navigateTo(itemId);
@@ -29,16 +48,15 @@ function Sidebar({ isActive }) {
                     {user && (
                         <div>
                             <div className="profileName">{user.username}</div>
-                            <div className="profileRole">{user.name}</div>
+                            <div className="profileRole">{user.role}</div>
                         </div>
                     )}
                 </div>
             </div>
-
             <div className="menuGroup">
                 <div className="menuLabel">MENU UTAMA</div>
                 <ul className="asideMenu">
-                    {mainMenu.map((item) => (
+                    {menuToShow.map((item) => (
                         <li
                             key={item.id}
                             className={`asideItem ${currentPage === item.id ? 'active' : ''}`}
@@ -51,7 +69,6 @@ function Sidebar({ isActive }) {
                     ))}
                 </ul>
             </div>
-
         </aside>
     );
 }

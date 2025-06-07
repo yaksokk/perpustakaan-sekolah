@@ -10,8 +10,9 @@ export function AuthProvider({ children }) {
 
     // Data user dummy untuk login
     const dummyUsers = [
-        { username: 'admin', password: 'admin123', name: 'Administrator' },
-        { username: 'user', password: 'user123', name: 'User Biasa' }
+        { username: 'admin', password: 'admin123', name: 'Administrator', role: 'Admin' },
+        { username: 'operator', password: 'operator123', name: 'Operator', role: 'Operator' },
+        { username: 'user', password: 'user123', name: 'User Biasa', role: 'User' }
     ];
 
     // Cek apakah user sudah login saat aplikasi dimuat
@@ -24,13 +25,14 @@ export function AuthProvider({ children }) {
     }, []);
 
     // Fungsi untuk login
+    // Fungsi untuk login
     const login = (username, password) => {
         const foundUser = dummyUsers.find(
             user => user.username === username && user.password === password
         );
 
         if (foundUser) {
-            const userData = { username: foundUser.username, name: foundUser.name };
+            const userData = { username: foundUser.username, name: foundUser.name, role: foundUser.role };
             setUser(userData);
             sessionStorage.setItem('currentUser', JSON.stringify(userData));
             return { success: true };

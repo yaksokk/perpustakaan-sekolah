@@ -9,7 +9,7 @@ import {
     ReturnedList,
     Users
 } from '../../pages';
-import { usePage } from '../../context';
+import { usePage, useAuth } from '../../context';
 
 // Komponen sementara untuk halaman yang belum dibuat
 function ComingSoon({ title }) {
@@ -43,31 +43,62 @@ function ComingSoon({ title }) {
 
 function PageRouter() {
     const { currentPage } = usePage();
+    const { user } = useAuth();
 
-    // Render halaman berdasarkan currentPage
-    switch (currentPage) {
-        case 'btnDashboard':
-            return <Dashboard />;
-        case 'btnKoleksi':
-            return <KoleksiBukuOperator />;
-        case 'btnPeminjaman':
-            return <Peminjaman />;
-        case 'btnPengembalian':
-            return <Pengembalian />;
-        case 'btnCetakKartu':
-            return <ComingSoon title="Cetak Kartu" />;
-        case 'btnTest':
-            return <Users title="Test" />;
-        // non sidebar
-        case 'btnSelectedBooks':
-            return <SelectedBooks title="Selected Books" />;
-        case 'btnDaftarPeminjam':
-            return <BorrowList title="Daftar Peminjam" />;
-        case 'btnReturnedList':
-            return <ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />;
-        default:
-            return <Dashboard />;
+    if (user?.role === 'Admin') {
+        // Admin bisa mengakses semua halaman
+        switch (currentPage) {
+            case 'btnDashboard':
+                return <Dashboard />;
+            case 'btnUsers':
+                return <Users />;
+            case 'btnKoleksi':
+                return <KoleksiBukuOperator />;
+            // Tambahkan kasus lainnya sesuai kebutuhan
+            default:
+                return <Dashboard />;
+        }
+    } else if (user?.role === 'Operator') {
+        // Operator hanya bisa mengakses beberapa halaman tertentu
+        switch (currentPage) {
+            case 'btnDashboard':
+                return <Dashboard />;
+            case 'btnKoleksi':
+                return <KoleksiBukuOperator />;
+            case 'btnSelectedBooks':
+                return <SelectedBooks title="Buku yang Ingin Dipinjam" />;
+            case 'btnDaftarPeminjam':
+                return <BorrowList title="Daftar Peminjam" />;
+            case 'btnReturnedList':
+                return <ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />;
+            default:
+                return <Dashboard />;
+        }
+    } else if (user?.role === 'User') {
+        // User hanya bisa mengakses halaman yang lebih terbatas
+        switch (currentPage) {
+            case 'btnDashboard':
+                return <Dashboard />;
+            case 'btnKoleksi':
+                return <KoleksiBukuUser />;
+            case 'btnPeminjaman':
+                return <Peminjaman />;
+            case 'btnPengembalian':
+                return <Pengembalian />;
+            case 'btnSelectedBooks':
+                return <SelectedBooks title="Buku yang Ingin Dipinjam" />;
+            case 'btnDaftarPeminjam':
+                return <BorrowList title="Daftar Peminjam" />;
+            case 'btnReturnedList':
+                return <ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />;
+            default:
+                return <Dashboard />;
+        }
     }
+    
+
+    return <Navigate to="/login" replace />;
 }
+
 
 export default PageRouter;
