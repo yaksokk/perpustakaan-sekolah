@@ -1,3 +1,5 @@
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import {
     Dashboard,
     KoleksiBukuUser,
@@ -41,64 +43,125 @@ function ComingSoon({ title }) {
     );
 }
 
-function PageRouter() {
-    const { currentPage } = usePage();
+// Komponen wrapper untuk sinkronisasi URL dengan state internal
+function PageSync({ children }) {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { currentPage, navigateTo } = usePage();
     const { user } = useAuth();
 
-    if (user?.role === 'Admin') {
-        // Admin bisa mengakses semua halaman
-        switch (currentPage) {
-            case 'btnDashboard':
-                return <Dashboard />;
-            case 'btnUsers':
-                return <Users />;
-            case 'btnKoleksi':
-                return <KoleksiBukuOperator />;
-            // Tambahkan kasus lainnya sesuai kebutuhan
-            default:
-                return <Dashboard />;
-        }
-    } else if (user?.role === 'Operator') {
-        // Operator hanya bisa mengakses beberapa halaman tertentu
-        switch (currentPage) {
-            case 'btnDashboard':
-                return <Dashboard />;
-            case 'btnKoleksi':
-                return <KoleksiBukuOperator />;
-            case 'btnSelectedBooks':
-                return <SelectedBooks title="Buku yang Ingin Dipinjam" />;
-            case 'btnDaftarPeminjam':
-                return <BorrowList title="Daftar Peminjam" />;
-            case 'btnReturnedList':
-                return <ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />;
-            default:
-                return <Dashboard />;
-        }
-    } else if (user?.role === 'User') {
-        // User hanya bisa mengakses halaman yang lebih terbatas
-        switch (currentPage) {
-            case 'btnDashboard':
-                return <Dashboard />;
-            case 'btnKoleksi':
-                return <KoleksiBukuUser />;
-            case 'btnPeminjaman':
-                return <Peminjaman />;
-            case 'btnPengembalian':
-                return <Pengembalian />;
-            case 'btnSelectedBooks':
-                return <SelectedBooks title="Buku yang Ingin Dipinjam" />;
-            case 'btnDaftarPeminjam':
-                return <BorrowList title="Daftar Peminjam" />;
-            case 'btnReturnedList':
-                return <ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />;
-            default:
-                return <Dashboard />;
-        }
-    }
-    
+    // Mapping URL ke button ID
+    const urlToPageMap = {
+        '/dashboard': 'btnDashboard',
+        '/koleksi-buku': 'btnKoleksi',
+        '/daftar-anggota': 'btnDaftarPengguna',
+        '/peminjaman': 'btnPeminjaman',
+        '/pengembalian': 'btnPengembalian',
+        '/selected-books': 'btnSelectedBooks',
+        '/daftar-peminjam': 'btnDaftarPeminjam',
+        '/returned-list': 'btnReturnedList'
+    };
 
-    return <Navigate to="/login" replace />;
+    // Mapping button ID ke URL
+    const pageToUrlMap = {
+        'btnDashboard': '/dashboard',
+        'btnKoleksi': '/koleksi-buku',
+        'btnDaftarPengguna': '/daftar-anggota',
+        'btnPeminjaman': '/peminjaman',
+        'btnPengembalian': '/pengembalian',
+        'btnSelectedBooks': '/selected-books',
+        'btnDaftarPeminjam': '/daftar-peminjam',
+        'btnReturnedList': '/returned-list'
+    };
+
+    // Sinkronisasi URL dengan currentPage state
+    useEffect(() => {
+        const pageFromUrl = urlToPageMap[location.pathname];
+        if (pageFromUrl && pageFromUrl !== currentPage) {
+            navigateTo(pageFromUrl);
+        }
+    }, [location.pathname]);
+
+    // Sinkronisasi currentPage state dengan URL
+    useEffect(() => {
+        const urlFromPage = pageToUrlMap[currentPage];
+        if (urlFromPage && location.pathname !== urlFromPage) {
+            navigate(urlFromPage, { replace: false });
+        }
+    }, [currentPage]);
+
+    // Redirect ke dashboard jika URL tidak valid atau root
+    useEffect(() => {
+        if (location.pathname === '/' || !urlToPageMap[location.pathname]) {
+            navigate('/dashboard', { replace: true });
+        }
+    }, [location.pathname, user]);
+
+    return children;
 }
 
+// Komponen untuk route yang memerlukan role tertentu
+function RoleBasedRoute({ children, allowedRoles, userRole }) {
+    if (!allowedRoles.includes(userRole)) {
+        return <Navigate to="/dashboard" replace />;
+    }
+    return children;
+}
+
+function PageRouter() {
+    const { user } = useAuth();
+
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return (
+        <PageSync>
+            <Routes>
+                {/* Route untuk semua role */}
+                <Route path="/dashboard" element={<Dashboard />} />
+                
+                {/* Route untuk Admin */}
+                {user.role === 'Admin' && (
+                    <>
+                        <Route path="/daftar-anggota" element={<Users />} />
+                        <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
+                        <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
+                        <Route path="/daftar-peminjam" element={<BorrowList title="Daftar Peminjam" />} />
+                        <Route path="/returned-list" element={<ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />} />
+                    </>
+                )}
+
+                {/* Route untuk Operator */}
+                {user.role === 'Operator' && (
+                    <>
+                        <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
+                        <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
+                        <Route path="/daftar-peminjam" element={<BorrowList title="Daftar Peminjam" />} />
+                        <Route path="/returned-list" element={<ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />} />
+                    </>
+                )}
+
+                {/* Route untuk User */}
+                {user.role === 'User' && (
+                    <>
+                        <Route path="/koleksi-buku" element={<KoleksiBukuUser />} />
+                        <Route path="/peminjaman" element={<Peminjaman />} />
+                        <Route path="/pengembalian" element={<Pengembalian />} />
+                        <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
+                        <Route path="/daftar-peminjam" element={<BorrowList title="Daftar Peminjam" />} />
+                        <Route path="/returned-list" element={<ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />} />
+                    </>
+                )}
+
+                {/* Redirect default ke dashboard */}
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                
+                {/* Catch all route - redirect ke dashboard jika URL tidak ditemukan */}
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+        </PageSync>
+    );
+}
 
 export default PageRouter;

@@ -1,3 +1,4 @@
+import { BrowserRouter as Router } from 'react-router-dom';
 import { useAuth, AuthProvider, PageProvider } from './context';
 import { PageRouter } from './components';
 import Login from './pages/auth/login';
@@ -36,7 +37,9 @@ function AppContent() {
 function App() {
     return (
         <AuthProvider>
-            <AppContent />
+            <Router>
+                <AppContent />
+            </Router>
         </AuthProvider>
     );
 }

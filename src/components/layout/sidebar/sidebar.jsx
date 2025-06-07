@@ -9,7 +9,7 @@ function Sidebar({ isActive }) {
     const adminMenu = [
         { id: 'btnDashboard', label: 'Dashboard' },
         { id: 'btnKoleksi', label: 'Koleksi Buku' },
-        { id: 'btnUsers', label: 'Daftar Pengguna' },
+        { id: 'btnDaftarPengguna', label: 'Daftar Anggota' },
     ];
 
     const operatorMenu = [
@@ -35,6 +35,7 @@ function Sidebar({ isActive }) {
     }
 
     const handleMenuClick = (itemId) => {
+        // Menggunakan navigateTo yang sudah terintegrasi dengan React Router
         navigateTo(itemId);
     };
 
