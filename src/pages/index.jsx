@@ -1,4 +1,4 @@
-import Users from './Admin/users/users'
+import Anggota from './Admin/anggota/anggota'
 import Dashboard from './Shared/dashboard/dashboard'
 import BorrowList from './Shared/borrow-list/borrowList'
 import ReturnedList from './Shared/returned-list/ReturnedList'
@@ -16,5 +16,5 @@ export {
     SelectedBooks,
     BorrowList,
     ReturnedList,
-    Users
+    Anggota
 }

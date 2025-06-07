@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Navbar, Sidebar, Table } from "../../../components";
 import data from '../../../../data.json'
-import './users.css'
+import './anggota.css'
 import { FaCirclePlus } from "react-icons/fa6";
 
-const AddUser = () => {
+const TambahAnggota = () => {
     const [form, setForm] = useState({
         username: "",
         name: "",
@@ -31,7 +31,7 @@ const AddUser = () => {
 
     return (
         <form className="form-add-user" onSubmit={handleSubmit}>
-            <h3>Tambah Buku</h3>
+            <h3>Tambah Anggota</h3>
 
             <label>Username</label>
             <input
@@ -82,7 +82,7 @@ const AddUser = () => {
     );
 };
 
-function Users() {
+function Anggota() {
     const [showSidebar, setShowSidebar] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [showAddUser, setShowAddUser] = useState(false);
@@ -118,7 +118,7 @@ function Users() {
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <Sidebar isActive={showSidebar} />
                 <main id="users" className="content">
-                    <h1>Daftar Pengguna</h1>
+                    <h1>Daftar Anggota</h1>
                     <div>
                         <input
                             type="text"
@@ -139,7 +139,7 @@ function Users() {
                     {showAddUser && (
                         <div className="overlayAddUser">
                             <div id="formAddUser" ref={formRef} className="contentAddUser">
-                                <AddUser />
+                                <TambahAnggota />
                             </div>
                         </div>
                     )}
@@ -149,4 +149,4 @@ function Users() {
     )
 }
 
-export default Users
+export default Anggota

@@ -9,7 +9,7 @@ import {
     SelectedBooks,
     BorrowList,
     ReturnedList,
-    Users
+    Anggota
 } from '../../pages';
 import { usePage, useAuth } from '../../context';
 
@@ -124,7 +124,7 @@ function PageRouter() {
                 {/* Route untuk Admin */}
                 {user.role === 'Admin' && (
                     <>
-                        <Route path="/daftar-anggota" element={<Users />} />
+                        <Route path="/daftar-anggota" element={<Anggota title="Daftar Anggota" />} />
                         <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
                         <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
                         <Route path="/daftar-peminjam" element={<BorrowList title="Daftar Peminjam" />} />
