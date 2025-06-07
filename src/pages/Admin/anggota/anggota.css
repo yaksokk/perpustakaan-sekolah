@@ -8,7 +8,6 @@
     font-size: 14px;
 }
 
-
 #users button {
     margin-left: 14px;
     border-radius: 7px;
@@ -63,14 +62,14 @@
 
 
 /* Overlay gelap saat form tampil */
-.overlayAddUser {
+#users .overlayAddUser {
     position: fixed;
     top: 56px;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: 1001;
     overflow-y: auto;
     margin-left: 200px;
     width: calc(100% - 200px);
@@ -80,15 +79,16 @@
 }
 
 /* Container form tambah buku */
-.contentAddUser {
+#users .contentAddUser {
     background-color: transparent;
     width: 80%;
     border-radius: 8px;
     position: relative;
-    z-index: 1001;
+    z-index: 1002;
     background-color: #d8c9f7;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     padding: 21px;
+    margin: 100px 0 20px;
 }
 
 #users .close-button {
@@ -106,7 +106,7 @@
     cursor: pointer;
 }
 
-#users .form-add-user {
+.form-add-user {
     padding: 21px;
     border-radius: 4px;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;

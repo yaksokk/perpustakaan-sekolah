@@ -1,6 +1,4 @@
 #petugas button {
-    margin-left: 14px;
-    border-radius: 7px;
     background-color: #AC86BB;
     color: #f4f4f4;
     border: none;
@@ -22,7 +20,6 @@
 
 #tablePetugas {
     overflow-x: auto;
-    margin-top: 14px;
 }
 
 #tablePetugas .custom-table {

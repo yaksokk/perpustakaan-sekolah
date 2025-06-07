@@ -109,9 +109,6 @@ function Petugas() {
         }
     ];
 
-    const handleAddPetugas = () => {
-        setShowAddUser(true);
-    };
 
     const handleEdit = (row) => {
         console.log('Edit row:', row);
@@ -142,9 +139,9 @@ function Petugas() {
             <Navbar onToggleMenu={() => setShowSidebar(!showSidebar)} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <Sidebar isActive={showSidebar} />
-                <main id="users" className="content">
+                <main id="petugas" className="content">
                     <h1>Daftar Petugas</h1>
-                    <div style={{marginTop: '14px'}}>
+                    <div style={{margin: '14px 0'}}>
                         <button
                             className='btnAddPetugas'
                             onClick={() => setShowAddPetugas(prev => !prev)}
