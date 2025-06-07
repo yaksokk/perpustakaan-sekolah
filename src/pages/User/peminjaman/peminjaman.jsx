@@ -5,6 +5,7 @@ import { useState } from 'react';
 function Peminjaman() {
     const [showSidebar, setShowSidebar] = useState(true);
     const [formData, setFormData] = useState({
+        judulBuku: '',
         status: '',
         namaPeminjam: '',
         tanggalPinjam: '',
@@ -48,6 +49,7 @@ function Peminjaman() {
 
         // Reset form setelah berhasil simpan
         setFormData({
+            judulBuku: '',
             status: '',
             namaPeminjam: '',
             tanggalPinjam: '',
@@ -57,6 +59,7 @@ function Peminjaman() {
 
     const handleBatal = () => {
         setFormData({
+            judulBuku: '',
             status: '',
             namaPeminjam: '',
             tanggalPinjam: '',
@@ -78,6 +81,20 @@ function Peminjaman() {
                                 <h2>Peminjaman Buku</h2>
                             </div>
                             <form className="form-content">
+                                <div className="form-group">
+                                    <label htmlFor="judulBuku">Judul Buku</label>
+                                    <input
+                                        type="text"
+                                        id="judulBuku"
+                                        name="judulBuku"
+                                        value={formData.judulBuku}
+                                        onChange={handleInputChange}
+                                        placeholder="masukkan judul buku"
+                                        className="form-input"
+                                        required
+                                    />
+                                </div>
+
                                 <div className="form-group">
                                     <label htmlFor="status">Status</label>
                                     <select
