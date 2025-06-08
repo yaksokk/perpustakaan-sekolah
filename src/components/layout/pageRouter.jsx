@@ -140,6 +140,7 @@ function PageRouter() {
                 {user.role === 'Operator' && (
                     <>
                         <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
+                        <Route path="/pengembalian" element={<Pengembalian />} />
                         <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
                         <Route path="/daftar-peminjam" element={<BorrowList title="Daftar Peminjam" />} />
                         <Route path="/returned-list" element={<ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />} />
@@ -151,7 +152,6 @@ function PageRouter() {
                     <>
                         <Route path="/koleksi-buku" element={<KoleksiBukuUser />} />
                         <Route path="/peminjaman" element={<Peminjaman />} />
-                        <Route path="/pengembalian" element={<Pengembalian />} />
                         <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
                         <Route path="/daftar-peminjam" element={<BorrowList title="Daftar Peminjam" />} />
                         <Route path="/returned-list" element={<ReturnedList title="Daftar Buku Yang Sudah Dikembalikan" />} />

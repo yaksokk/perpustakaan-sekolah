@@ -16,13 +16,13 @@ function Sidebar({ isActive }) {
     const operatorMenu = [
         { id: 'btnDashboard', label: 'Dashboard' },
         { id: 'btnKoleksi', label: 'Koleksi Buku' },
+        { id: 'btnPengembalian', label: 'Pengembalian' },
     ];
 
     const userMenu = [
         { id: 'btnDashboard', label: 'Dashboard' },
         { id: 'btnKoleksi', label: 'Koleksi Buku' },
         { id: 'btnPeminjaman', label: 'Peminjaman' },
-        { id: 'btnPengembalian', label: 'Pengembalian' },
     ];
 
     // Tentukan menu yang akan ditampilkan berdasarkan role
