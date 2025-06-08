@@ -1,0 +1,166 @@
+.card-perpus-overlay {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.card-perpus-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    max-width: 500px;
+    width: 90%;
+}
+
+.card-perpus-close-button {
+    border-radius: 50%;
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    color: #FFf;
+    width: 30px;
+    height: 30px;
+    background: #ff4081;
+}
+
+.library-card-perpus {
+    border: 3px solid #000;
+    padding: 20px;
+    margin: 20px 0;
+    background: white;
+    font-family: Arial, sans-serif;
+}
+
+.card-perpus-header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.card-perpus-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.card-perpus-header p {
+    margin: 5px 0 0 0;
+    font-size: 12px;
+}
+
+.card-perpus-body h3 {
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.card-perpus-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.info-left {
+    flex: 1;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.label {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.colon {
+    width: 15px;
+    flex-shrink: 0;
+}
+
+.value {
+    flex: 1;
+    font-weight: bold;
+}
+
+.photo-placeholder {
+    width: 80px;
+    height: 100px;
+    border: 2px solid #000;
+    margin-left: 20px;
+    flex-shrink: 0;
+}
+
+.card-perpus-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 40px;
+}
+
+.signature-section {
+    text-align: center;
+    font-size: 12px;
+}
+
+.signature-section p {
+    margin: 2px 0;
+}
+
+.signature-space {
+    height: 40px;
+    margin: 10px 0;
+}
+
+.signature-name {
+    font-weight: bold;
+}
+
+.card-perpus-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-print {
+    background: #AC86BB;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto;
+}
+
+.btn-print:hover {
+    background: #AC86DD;
+}
+
+@media print {
+
+    .card-perpus-overlay,
+    .card-perpus-close-button,
+    .card-perpus-actions {
+        display: none !important;
+    }
+
+    .library-card-perpus {
+        border: 3px solid #000;
+        margin: 0;
+        padding: 20px;
+    }
+}

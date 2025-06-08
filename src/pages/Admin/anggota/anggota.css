@@ -1,4 +1,4 @@
-#users input[type="text"] {
+#users #searchUser[type="text"] {
     padding: 10px;
     margin: 10px 0;
     width: 100%;
@@ -8,7 +8,7 @@
     font-size: 14px;
 }
 
-#users button {
+#users .btnAddUser {
     margin-left: 14px;
     border-radius: 7px;
     background-color: #AC86BB;
@@ -17,15 +17,16 @@
     padding: 10px 15px;
     cursor: pointer;
     font-weight: 700;
-    border-radius: 7px;
+    /* border-radius: 7px; */
+    text-align: center;
 }
 
-#users button:disabled {
+#users .btnAddUser:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
-#users button:hover {
+#users .btnAddUser:hover {
     background-color: #AC86DD;
 }
 
@@ -87,8 +88,7 @@
     z-index: 1002;
     background-color: #d8c9f7;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    padding: 21px;
-    margin: 100px 0 20px;
+    padding: 21px 21px 0;
 }
 
 #users .close-button {
@@ -133,9 +133,9 @@
 
 .form-add-user input[type="text"],
 .form-add-user input[type="number"],
+.form-add-user input[type="password"],
 .form-add-user select {
-    margin: 0;
-    max-width: 200px;
+    margin: 7px 0 14px;
     width: 100%;
     padding: 7px 12px;
     border-radius: 6px;
@@ -145,31 +145,26 @@
     box-sizing: border-box;
     color: #b7a9eb;
 }
-.form-add-user select {
-    width: 20%;
-    max-width: 400px;
-    min-width: 150px;
-}
+
 
 .form-add-user input[type="text"]::placeholder,
 .form-add-user input[type="number"]::placeholder,
+.form-add-user input[type="password"]::placeholder,
 .form-add-user select {
     color: #b7a9eb;
 }
 
 .form-add-user button.btn-submit {
-    margin-top: 21px;
     padding: 10px 20px;
-    background-color: #8b6de9;
-    border-radius: 21px;
+    background-color: #AC86BB;
+    border-radius: 7px;
     color: white;
     font-weight: 600;
     transition: background-color 0.3s ease;
     display: block;
-    margin-left: auto;
-    margin-right: 0;
+    margin: 7px auto;
 }
 
 .form-add-users button.btn-submit:hover {
-    background-color: #7a5eda;
+    background-color: #AC86DD;
 }
