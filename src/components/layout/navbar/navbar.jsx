@@ -21,7 +21,7 @@ function Navbar({ onToggleMenu }) {
                     <span>Sistem Perpustakaan</span>
                 </div>
                 <div className="navbar menu-toggle">
-                    <button onClick={onToggleMenu}><IoMenu className="icon" /></button>
+                    <button style={{backgroundColor: 'transparent'}} onClick={onToggleMenu}><IoMenu className="icon" /></button>
                 </div>
             </div>
             <div className="navbar logout">
