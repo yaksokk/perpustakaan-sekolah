@@ -56,7 +56,7 @@ function SelectedBooks() {
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <Sidebar isActive={showSidebar} />
                 <main id='selectedBooks' className='content'>
-                    <h1>Buku yang Ingin Dipinjam</h1>
+                    <h1>Buku yang Ingin Dipinjam Hari Ini</h1>
                     <div className="wrapper" style={{ marginTop: '20px', overflowX: 'auto' }}>
                         <Table columns={columns} data={borrowList} />
                     </div>
