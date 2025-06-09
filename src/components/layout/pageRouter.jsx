@@ -1,7 +1,8 @@
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import {
-    Dashboard,
+    DashboardOperator,
+    DashboardUser,
     KoleksiBukuUser,
     KoleksiBukuOperator,
     Peminjaman,
@@ -122,11 +123,11 @@ function PageRouter() {
         <PageSync>
             <Routes>
                 {/* Route untuk semua role */}
-                <Route path="/dashboard" element={<Dashboard />} />
-                
+
                 {/* Route untuk Admin */}
                 {user.role === 'Admin' && (
                     <>
+                        <Route path="/dashboard" element={<DashboardOperator />} />
                         <Route path="/daftar-anggota" element={<Anggota title="Daftar Anggota" />} />
                         <Route path="/daftar-petugas" element={<Petugas title="Daftar Petugas" />} />
                         <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
@@ -139,6 +140,7 @@ function PageRouter() {
                 {/* Route untuk Operator */}
                 {user.role === 'Operator' && (
                     <>
+                        <Route path="/dashboard" element={<DashboardOperator />} />
                         <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
                         <Route path="/pengembalian" element={<Pengembalian />} />
                         <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
@@ -150,6 +152,7 @@ function PageRouter() {
                 {/* Route untuk User */}
                 {user.role === 'User' && (
                     <>
+                        <Route path="/dashboard" element={<DashboardUser />} />
                         <Route path="/koleksi-buku" element={<KoleksiBukuUser />} />
                         <Route path="/peminjaman" element={<Peminjaman />} />
                         <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
@@ -160,7 +163,7 @@ function PageRouter() {
 
                 {/* Redirect default ke dashboard */}
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                
+
                 {/* Catch all route - redirect ke dashboard jika URL tidak ditemukan */}
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
