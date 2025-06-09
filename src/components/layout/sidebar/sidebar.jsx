@@ -49,7 +49,7 @@ function Sidebar({ isActive }) {
                 <div>
                     {user && (
                         <div>
-                            <div className="profileName">{user.username}</div>
+                            <div className="profileName">{user.name}</div>
                             <div className="profileRole">{user.role}</div>
                         </div>
                     )}
