@@ -5,7 +5,7 @@ import logo from '../../../assets/images/logo_nobg.jpg'
 import { useAuth } from './../../../context';
 
 function Navbar({ onToggleMenu }) {
-    const { user, logout } = useAuth();
+    const { logout } = useAuth();
 
     const handleLogout = () => {
         if (window.confirm('Apakah Anda yakin ingin logout?')) {
@@ -25,17 +25,11 @@ function Navbar({ onToggleMenu }) {
                 </div>
             </div>
             <div className="navbar logout">
-                {user && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <span style={{ fontSize: '14px', color: '#333' }}>
-                            Selamat datang, {user.name}
-                        </span>
-                        <button onClick={handleLogout}>
-                            <span>Logout</span>
-                            <IoLogOutOutline className="icon" />
-                        </button>
-                    </div>
-                )}
+                <div title="Keluar">
+                    <button onClick={handleLogout}>
+                        <IoLogOutOutline className="icon" />
+                    </button>
+                </div>
             </div>
         </nav>
     );
