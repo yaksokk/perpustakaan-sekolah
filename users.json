@@ -1,0 +1,34 @@
+{
+    "role": [{
+        "admin": {
+            "username": "admin",
+            "password": "123",
+            "name": "Administrator"
+        },
+        "staff": [{
+            "username": "petugas1",
+            "password": "123",
+            "available": true
+        }, {
+            "username": "petugas2",
+            "password": "456",
+            "available": true
+        }],
+        "user": [{
+                "username": "jungkook",
+                "password": "1234567",
+                "name": "Thya",
+                "profesi": "Siswa",
+                "available": true
+            },
+            {
+                "username": "taetae",
+                "password": "1234567",
+                "name": "Samuel",
+                "profesi": "Siswa",
+                "available": true
+            }
+        ]
+
+    }]
+}
