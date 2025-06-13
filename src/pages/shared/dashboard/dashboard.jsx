@@ -23,6 +23,7 @@ function Dashboard() {
     const [popupBarVisible, setPopupBarVisible] = useState(false);
     const [popupToReturnVisible, setPopupToReturnVisible] = useState(false);
     const [selectedBulan, setSelectedBulan] = useState(null);
+    const [popupType, setPopupType] = useState(''); // Tambahkan state untuk tipe popup
 
     const dataPeminjam = [
         { bulan: 'Jan', peminjam: 3 },
@@ -43,11 +44,54 @@ function Dashboard() {
 
     const handleBarClick = (data) => {
         setSelectedBulan(data.bulan);
+        setPopupType('borrowers');
         setPopupBarVisible(true);
     };
 
     const handleToReturnClick = () => {
         setPopupToReturnVisible(true);
+    };
+
+    const handleInfoBoxClick = (type) => {
+        setPopupType(type);
+        setPopupBarVisible(true);
+    };
+
+    const closePopups = () => {
+        setPopupBarVisible(false);
+        setPopupToReturnVisible(false);
+        setPopupType('');
+        setSelectedBulan(null);
+    };
+
+    const renderPopupContent = () => {
+        switch(popupType) {
+            case 'borrowers':
+                return <ListBorrowersByMonth bulan={selectedBulan} />;
+            case 'mostBorrowed':
+                return <BukuDenganPeminjamanTerbanyak />;
+            case 'frequentlyBorrowed':
+                return <BukuYangSeringDipinjam />;
+            case 'mostBooks':
+                return <Terbanyak />;
+            default:
+                return <ListBorrowersByMonth bulan={selectedBulan} />;
+        }
+    };
+
+    const getPopupTitle = () => {
+        switch(popupType) {
+            case 'borrowers':
+                return `Daftar Peminjam - ${selectedBulan}`;
+            case 'mostBorrowed':
+                return 'Buku Dengan Peminjaman Terbanyak';
+            case 'frequentlyBorrowed':
+                return 'Buku Yang Sering Dipinjam';
+            case 'mostBooks':
+                return 'Buku Terbanyak';
+            default:
+                return `Daftar Peminjam - ${selectedBulan}`;
+        }
     };
 
     return (
@@ -57,22 +101,42 @@ function Dashboard() {
                 <Sidebar isActive={showSidebar} />
                 <main id="dashboard" className="content">
                     <h1>Dashboard</h1>
-                    <InfoBoxes navigateTo={navigateTo} onToReturnClick={handleToReturnClick} />
-                    <ChartSection dataPeminjam={dataPeminjam} handleBarClick={handleBarClick} dataStatusBuku={dataStatusBuku} COLORS={COLORS} />
-                    {popupBarVisible && <PopupModal title={`Daftar Peminjam - ${selectedBulan}`} onClose={() => setPopupBarVisible(false)}><ListBorrowersByMonth bulan={selectedBulan} /></PopupModal>}
-                    {popupToReturnVisible && <PopupModal title="Daftar Buku Yang Harus Dikembalikan" onClose={() => setPopupToReturnVisible(false)}><BooksToReturn /></PopupModal>}
+                    <InfoBoxes 
+                        navigateTo={navigateTo} 
+                        onToReturnClick={handleToReturnClick}
+                        onInfoBoxClick={handleInfoBoxClick}
+                    />
+                    <ChartSection 
+                        dataPeminjam={dataPeminjam} 
+                        handleBarClick={handleBarClick} 
+                        dataStatusBuku={dataStatusBuku} 
+                        COLORS={COLORS} 
+                    />
+                    {popupBarVisible && (
+                        <PopupModal title={getPopupTitle()} onClose={closePopups}>
+                            {renderPopupContent()}
+                        </PopupModal>
+                    )}
+                    {popupToReturnVisible && (
+                        <PopupModal title="Daftar Buku Yang Harus Dikembalikan" onClose={closePopups}>
+                            <BooksToReturn />
+                        </PopupModal>
+                    )}
                 </main>
             </div>
         </>
     );
 }
 
-function InfoBoxes({ navigateTo, onToReturnClick }) {
+function InfoBoxes({ navigateTo, onToReturnClick, onInfoBoxClick }) {
     const boxes = [
         { color: '#7266d1', count: 30, label: 'Jumlah Buku', action: () => navigateTo('btnKoleksi') },
         { color: '#fb8c00', count: 12, label: 'Buku yang Ingin Dipinjam', action: () => navigateTo('btnSelectedBooks') },
         { color: '#43a047', count: 8, label: 'Buku yang Harus Dikembalikan', action: onToReturnClick },
         { color: '#26c6da', count: 3, label: 'Buku yang Dikembalikan', action: () => navigateTo('btnReturnedList') },
+        { color: '#d16666', count: 9, label: 'Buku yang Sering Dipinjam', action: () => onInfoBoxClick('frequentlyBorrowed') },
+        { color: '#3539b1', count: 8, label: 'Buku dengan Peminjaman Terbanyak', action: () => onInfoBoxClick('mostBorrowed') },
+        { color: '#ff4081', count: 10, label: 'Buku Terbanyak', action: () => onInfoBoxClick('mostBooks') },
     ];
 
     return (
@@ -99,7 +163,14 @@ function ChartSection({ dataPeminjam, handleBarClick, dataStatusBuku, COLORS }) 
                         <XAxis dataKey="bulan" />
                         <YAxis allowDecimals={false} />
                         <Tooltip />
-                        <Bar dataKey="peminjam" fill="#ff4081" radius={[6, 6, 0, 0]} barSize={30} onClick={handleBarClick} />
+                        <Bar 
+                            dataKey="peminjam" 
+                            fill="#ff4081" 
+                            radius={[6, 6, 0, 0]} 
+                            barSize={30}
+                            onClick={handleBarClick}
+                            style={{ cursor: 'pointer' }}
+                        />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
@@ -134,7 +205,7 @@ function PopupModal({ title, onClose, children }) {
     );
 }
 
-function ListBorrowersByMonth() {
+function ListBorrowersByMonth({ bulan }) {
     const borrower = data.peminjam;
     const columns = [
         { header: 'Nomor', accessor: 'id' },
@@ -145,6 +216,54 @@ function ListBorrowersByMonth() {
 
     return (
         <div id='tablePeminjam'>
+            <Table columns={columns} data={borrower} />
+        </div>
+    );
+}
+
+function BukuYangSeringDipinjam() {
+    const borrower = data.peminjam;
+    const columns = [
+        { header: 'Nomor', accessor: 'id' },
+        { header: 'Judul', accessor: 'title' },
+        { header: 'Peminjam', accessor: 'name' },
+        { header: 'Jumlah Peminjam', accessor: 'totalBorrower' },
+    ];
+
+    return (
+        <div className="wrapper" style={{ marginTop: '20px', overflowX: 'auto' }}>
+            <Table columns={columns} data={borrower} />
+        </div>
+    );
+}
+
+function BukuDenganPeminjamanTerbanyak() {
+    const borrower = data.peminjam;
+    const columns = [
+        { header: 'Nomor', accessor: 'id' },
+        { header: 'Judul', accessor: 'title' },
+        { header: 'Peminjam', accessor: 'name' },
+        { header: 'Jumlah Peminjam', accessor: 'totalBorrower' },
+    ];
+
+    return (
+        <div className="wrapper" style={{ marginTop: '20px', overflowX: 'auto' }}>
+            <Table columns={columns} data={borrower} />
+        </div>
+    );
+}
+
+function Terbanyak() {
+    const borrower = data.peminjam;
+    const columns = [
+        { header: 'Nomor', accessor: 'id' },
+        { header: 'Judul', accessor: 'title' },
+        { header: 'Peminjam', accessor: 'name' },
+        { header: 'Jumlah Peminjam', accessor: 'totalBorrower' },
+    ];
+
+    return (
+        <div className="wrapper" style={{ marginTop: '20px', overflowX: 'auto' }}>
             <Table columns={columns} data={borrower} />
         </div>
     );
