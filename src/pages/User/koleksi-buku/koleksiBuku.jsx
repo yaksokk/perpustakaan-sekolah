@@ -8,7 +8,7 @@ function KoleksiBuku() {
     const [showSidebar, setShowSidebar] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [showSynopsis, setShowSynopsis] = useState(null);
-    
+
     const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
     const synopsisRef = useRef(null);
 
@@ -91,22 +91,33 @@ function KoleksiBuku() {
 
     const columns = [
         { header: "No", render: (_, idx) => idx + 1 },
-        { 
-            header: "Judul Buku", 
+        {
+            header: "Judul Buku",
             accessor: "title",
             sortable: true,
             onClick: () => handleSort('title'),
             sortIcon: getSortIcon('title')
         },
-        { 
-            header: "Penulis", 
+        {
+            header: "Gambar Buku",
+            accessor: "image",
+
+            render: (row) => (
+                <img
+                    src={row.image}
+                    alt={row.title}
+                />
+            ),
+        },
+        {
+            header: "Penulis",
             accessor: "author",
             sortable: true,
             onClick: () => handleSort('author'),
             sortIcon: getSortIcon('author')
         },
-        { 
-            header: "Tahun", 
+        {
+            header: "Tahun",
             accessor: "year",
             sortable: true,
             onClick: () => handleSort('year'),
@@ -114,8 +125,8 @@ function KoleksiBuku() {
         },
         { header: "Kode Buku", accessor: "code" },
         { header: "Rak Buku", accessor: "rack" },
-        { 
-            header: "Kategori", 
+        {
+            header: "Kategori",
             accessor: "category",
             sortable: true,
             onClick: () => handleSort('category'),
@@ -130,6 +141,10 @@ function KoleksiBuku() {
                     style={{ border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }}
                 >📖</button>
             )
+        },
+        {
+            header: "Total Buku",
+            accessor: "BooksTotal",
         },
         {
             header: "Status",
@@ -183,7 +198,7 @@ function KoleksiBuku() {
             <Navbar onToggleMenu={() => setShowSidebar(!showSidebar)} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <Sidebar isActive={showSidebar} />
-                <main id='koleksiBuku' className='content' style={{ marginTop: '56px', padding: '20px' }}>
+                <main id='koleksiBukuUser' className='content' style={{ marginTop: '56px', padding: '20px' }}>
                     <section id="koleksi">
                         <h1>Koleksi Buku Perpustakaan User</h1>
                         <div>
@@ -194,7 +209,7 @@ function KoleksiBuku() {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <div id='tableBuku'>
+                        <div id='tableBukuUser'>
                             <Table columns={columns} data={processedBooks} />
                         </div>
                         {showSynopsis !== null && (

@@ -3,7 +3,11 @@
     width: 100%;
 }
 
-#koleksiBuku input[type="text"] {
+#koleksiBukuUser {
+    overflow: hidden;
+}
+
+#koleksiBukuUser input[type="text"] {
     padding: 10px;
     margin: 10px 0;
     width: 100%;
@@ -13,8 +17,23 @@
     font-size: 14px;
 }
 
-#tableBuku{
+#tableBukuUser{
     margin-top: 14px;
+    overflow: auto;
+}
+
+#tableBukuUser tbody td:nth-child(1),
+#tableBukuUser tbody td:nth-child(3),
+#tableBukuUser tbody td:nth-child(5),
+#tableBukuUser tbody td:nth-child(6),
+#tableBukuUser tbody td:nth-child(7),
+#tableBukuUser tbody td:nth-child(9),
+#tableBukuUser tbody td:nth-child(10){
+    text-align: center;
+}
+#tableBukuUser img{
+    height: 100px;
+    object-fit: cover;
 }
 
 .modal-sinopsis-overlay {
