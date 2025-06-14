@@ -290,6 +290,10 @@ function KoleksiBuku() {
             )
         },
         {
+            header: "Tanggal Tersedia",
+            accessor: "availableDate",
+        },
+        {
             header: "Aksi",
             render: (row) => (
                 <button
