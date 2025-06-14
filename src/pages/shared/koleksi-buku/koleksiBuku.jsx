@@ -9,6 +9,7 @@ import { FaCirclePlus } from "react-icons/fa6";
 const TambahBuku = () => {
     const [form, setForm] = useState({
         judul: "",
+        gambar: "",
         penulis: "",
         tahun: "",
         kategori: "",
@@ -28,6 +29,7 @@ const TambahBuku = () => {
         alert("Buku berhasil ditambahkan!");
         setForm({
             judul: "",
+            gambar: "",
             penulis: "",
             tahun: "",
             kategori: "",
@@ -47,6 +49,15 @@ const TambahBuku = () => {
                 name="judul"
                 placeholder="isi judul buku"
                 value={form.judul}
+                onChange={handleChange}
+                required
+            />
+
+            <label>Gambar</label>
+            <input
+                type="file"
+                name="gambar"
+                value={form.image}
                 onChange={handleChange}
                 required
             />
@@ -206,22 +217,33 @@ function KoleksiBuku() {
 
     const columns = [
         { header: "No", render: (_, idx) => idx + 1 },
-        { 
-            header: "Judul Buku", 
+        {
+            header: "Judul Buku",
             accessor: "title",
             sortable: true,
             onClick: () => handleSort('title'),
             sortIcon: getSortIcon('title')
         },
-        { 
-            header: "Penulis", 
+        {
+            header: "Gambar Buku",
+            accessor: "image",
+
+            render: (row) => (
+                <img
+                    src={row.image}
+                    alt={row.title}
+                />
+            ),
+        },
+        {
+            header: "Penulis",
             accessor: "author",
             sortable: true,
             onClick: () => handleSort('author'),
             sortIcon: getSortIcon('author')
         },
-        { 
-            header: "Tahun", 
+        {
+            header: "Tahun",
             accessor: "year",
             sortable: true,
             onClick: () => handleSort('year'),
@@ -229,8 +251,8 @@ function KoleksiBuku() {
         },
         { header: "Kode Buku", accessor: "code" },
         { header: "Rak Buku", accessor: "rack" },
-        { 
-            header: "Kategori", 
+        {
+            header: "Kategori",
             accessor: "category",
             sortable: true,
             onClick: () => handleSort('category'),
@@ -245,6 +267,10 @@ function KoleksiBuku() {
                     style={{ border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }}
                 >📖</button>
             )
+        },
+        {
+            header: "Total Buku",
+            accessor: "BooksTotal",
         },
         {
             header: "Status",
@@ -281,7 +307,7 @@ function KoleksiBuku() {
         }
     ];
 
-        useEffect(() => {
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (synopsisRef.current && !synopsisRef.current.contains(event.target)) {
                 setShowSynopsis(null);
@@ -363,10 +389,10 @@ function KoleksiBuku() {
                                 <span style={{ marginLeft: '10px' }}>
                                     | Diurutkan berdasarkan: {
                                         sortConfig.key === 'title' ? 'Judul Buku' :
-                                        sortConfig.key === 'author' ? 'Penulis' :
-                                        sortConfig.key === 'year' ? 'Tahun' :
-                                        sortConfig.key === 'category' ? 'Kategori' :
-                                        sortConfig.key === 'available' ? 'Status' : sortConfig.key
+                                            sortConfig.key === 'author' ? 'Penulis' :
+                                                sortConfig.key === 'year' ? 'Tahun' :
+                                                    sortConfig.key === 'category' ? 'Kategori' :
+                                                        sortConfig.key === 'available' ? 'Status' : sortConfig.key
                                     } ({sortConfig.direction === 'asc' ? 'A-Z' : 'Z-A'})
                                 </span>
                             )}

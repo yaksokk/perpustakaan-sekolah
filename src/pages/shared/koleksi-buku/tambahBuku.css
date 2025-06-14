@@ -38,6 +38,22 @@
     resize: vertical;
     color: #333;
 }
+.form-tambah-buku input[type="file"]{
+    margin: 0;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: none;
+    background-color: #f0e8ff;
+    font-size: 14px;
+    box-sizing: border-box;
+    resize: vertical;
+    color: #333;
+    background-color: #f0e8ff;
+    width: 400px;
+    max-width: 100%;
+    min-width: 200px;
+}
+
 
 .form-tambah-buku input[type="text"]::placeholder,
 .form-tambah-buku input[type="number"]::placeholder,
@@ -62,4 +78,18 @@
 
 .form-tambah-buku button.btn-submit:hover {
     background-color: #7a5eda;
+}
+
+#tableBuku tbody td:nth-child(1),
+#tableBuku tbody td:nth-child(3),
+#tableBuku tbody td:nth-child(5),
+#tableBuku tbody td:nth-child(6),
+#tableBuku tbody td:nth-child(7),
+#tableBuku tbody td:nth-child(9),
+#tableBuku tbody td:nth-child(10){
+    text-align: center;
+}
+#tableBuku img{
+    height: 100px;
+    object-fit: cover;
 }
