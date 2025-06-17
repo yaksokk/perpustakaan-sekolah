@@ -20,4 +20,5 @@ main {
     transition: all 0.7s ease-in-out;
     margin-left: 200px;
     width: calc(100% - 200px);
+    min-height: calc(100vh - 57px);
 }
