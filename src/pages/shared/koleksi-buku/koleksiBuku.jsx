@@ -219,20 +219,17 @@ function KoleksiBuku() {
         { header: "No", render: (_, idx) => idx + 1 },
         {
             header: "Judul Buku",
-            accessor: "title",
+            accessor: ["title", "image"],
             sortable: true,
             onClick: () => handleSort('title'),
-            sortIcon: getSortIcon('title')
-        },
-        {
-            header: "Gambar Buku",
-            accessor: "image",
-
-            render: (row) => (
+            sortIcon: getSortIcon('title'),
+            render: (row) => (<>
                 <img
                     src={row.image}
                     alt={row.title}
                 />
+                <span>{row.title}</span>
+            </>
             ),
         },
         {

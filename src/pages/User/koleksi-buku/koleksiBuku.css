@@ -17,23 +17,40 @@
     font-size: 14px;
 }
 
-#tableBukuUser{
+#tableBukuUser {
     margin-top: 14px;
     overflow: auto;
 }
 
+#tableBukuUser tbody td:nth-child(2) {
+    min-width: 100px;
+    text-overflow: ellipsis;
+    white-space: wrap;
+    display: flex;
+    gap: 7px;
+}
+
+#tableBukuUser tbody td:nth-child(2) span {
+    font-weight: 700;    
+}
+
+#tableBukuUser thead th:nth-child(2),
 #tableBukuUser tbody td:nth-child(1),
-#tableBukuUser tbody td:nth-child(3),
+#tableBukuUser tbody td:nth-child(4),
 #tableBukuUser tbody td:nth-child(5),
 #tableBukuUser tbody td:nth-child(6),
 #tableBukuUser tbody td:nth-child(7),
+#tableBukuUser tbody td:nth-child(8),
 #tableBukuUser tbody td:nth-child(9),
-#tableBukuUser tbody td:nth-child(10){
+#tableBukuUser tbody td:nth-child(10),
+#tableBukuUser tbody td:nth-child(12) {
     text-align: center;
 }
-#tableBukuUser img{
+
+#tableBukuUser img {
+    float: left;
     height: 100px;
-    object-fit: cover;
+    object-fit: cover;  
 }
 
 .modal-sinopsis-overlay {
