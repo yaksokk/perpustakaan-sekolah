@@ -22,6 +22,26 @@
     padding: 0 20px;
     box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
 }
+#dashboard .boxBook {
+    position: relative;
+    width: 280px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    padding: 0 20px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+}
+
+
+#dashboard .boxBook span:nth-child(1) {
+    font-size: 32px;
+    font-weight: 700;
+}
+
 
 #dashboard .box span:nth-child(1) {
     font-size: 32px;
@@ -32,6 +52,11 @@
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 14px;
+}
+#dashboard .boxBook span:nth-child(3) {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 7px 0;
 }
 
 #dashboard .box .info {
@@ -46,6 +71,12 @@
     padding: 6px 14px;
     border-radius: 10px;
     font-weight: 600;
+}
+#dashboard td img{
+    height: 100px;
+    object-fit: cover;
+    margin: 0 auto;
+    border: 2px solid red;
 }
 
 .popup-modal {
