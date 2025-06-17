@@ -64,17 +64,6 @@ function Login() {
                         {isLoading ? 'LOADING...' : 'MASUK'}
                     </button>
                 </form>
-                <div style={{
-                    marginTop: '20px',
-                    fontSize: '12px',
-                    color: '#666',
-                    textAlign: 'center'
-                }}>
-                    <p>Demo Login:</p>
-                    <p>Username: admin, Password: admin123</p>
-                    <p>Username: operator, Password: operator123</p>
-                    <p>Username: user, Password: user123</p>
-                </div>
             </div>
         </div>
     )
