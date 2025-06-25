@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import {
+    DashboardAdmin,
     DashboardOperator,
     DashboardUser,
     KoleksiBukuUser,
@@ -127,7 +128,7 @@ function PageRouter() {
                 {/* Route untuk Admin */}
                 {user.role === 'Admin' && (
                     <>
-                        <Route path="/dashboard" element={<DashboardOperator />} />
+                        <Route path="/dashboard" element={<DashboardAdmin />} />
                         <Route path="/daftar-anggota" element={<Anggota title="Daftar Anggota" />} />
                         <Route path="/daftar-petugas" element={<Petugas title="Daftar Petugas" />} />
                         <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
