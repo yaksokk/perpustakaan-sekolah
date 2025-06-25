@@ -134,9 +134,6 @@ function InfoBoxes({ navigateTo, onToReturnClick, onInfoBoxClick }) {
         { color: '#fb8c00', count: 12, label: 'Buku yang Ingin Dipinjam', action: () => navigateTo('btnSelectedBooks') },
         { color: '#43a047', count: 8, label: 'Buku yang Harus Dikembalikan', action: onToReturnClick },
         { color: '#26c6da', count: 3, label: 'Buku yang Dikembalikan', action: () => navigateTo('btnReturnedList') },
-        { color: '#d16666', count: 9, label: 'Buku yang Sering Dipinjam', action: () => onInfoBoxClick('frequentlyBorrowed') },
-        { color: '#3539b1', count: 8, label: 'Buku dengan Peminjaman Terbanyak', action: () => onInfoBoxClick('mostBorrowed') },
-        { color: '#ff4081', count: 10, label: 'Buku Terbanyak', action: () => onInfoBoxClick('mostBooks') },
     ];
 
     return (
@@ -221,53 +218,6 @@ function ListBorrowersByMonth({ bulan }) {
     );
 }
 
-function BukuYangSeringDipinjam() {
-    const borrower = data.peminjam;
-    const columns = [
-        { header: 'Nomor', accessor: 'id' },
-        { header: 'Judul', accessor: 'title' },
-        { header: 'Peminjam', accessor: 'name' },
-        { header: 'Jumlah Peminjam', accessor: 'totalBorrower' },
-    ];
-
-    return (
-        <div className="wrapper" style={{ marginTop: '20px', overflowX: 'auto' }}>
-            <Table columns={columns} data={borrower} />
-        </div>
-    );
-}
-
-function BukuDenganPeminjamanTerbanyak() {
-    const borrower = data.peminjam;
-    const columns = [
-        { header: 'Nomor', accessor: 'id' },
-        { header: 'Judul', accessor: 'title' },
-        { header: 'Peminjam', accessor: 'name' },
-        { header: 'Jumlah Peminjam', accessor: 'totalBorrower' },
-    ];
-
-    return (
-        <div className="wrapper" style={{ marginTop: '20px', overflowX: 'auto' }}>
-            <Table columns={columns} data={borrower} />
-        </div>
-    );
-}
-
-function Terbanyak() {
-    const borrower = data.peminjam;
-    const columns = [
-        { header: 'Nomor', accessor: 'id' },
-        { header: 'Judul', accessor: 'title' },
-        { header: 'Peminjam', accessor: 'name' },
-        { header: 'Jumlah Peminjam', accessor: 'totalBorrower' },
-    ];
-
-    return (
-        <div className="wrapper" style={{ marginTop: '20px', overflowX: 'auto' }}>
-            <Table columns={columns} data={borrower} />
-        </div>
-    );
-}
 
 function BooksToReturn() {
     const borrower = data.peminjam;
