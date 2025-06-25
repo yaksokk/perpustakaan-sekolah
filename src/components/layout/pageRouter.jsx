@@ -143,6 +143,7 @@ function PageRouter() {
                     <>
                         <Route path="/dashboard" element={<DashboardOperator />} />
                         <Route path="/koleksi-buku" element={<KoleksiBukuOperator />} />
+                        <Route path="/peminjaman" element={<Peminjaman />} />
                         <Route path="/pengembalian" element={<Pengembalian />} />
                         <Route path="/selected-books" element={<SelectedBooks title="Buku yang Ingin Dipinjam" />} />
                         <Route path="/daftar-peminjam" element={<BorrowList title="Daftar Peminjam" />} />

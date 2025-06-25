@@ -16,6 +16,7 @@ function Sidebar({ isActive }) {
     const operatorMenu = [
         { id: 'btnDashboard', label: 'Dashboard' },
         { id: 'btnKoleksi', label: 'Koleksi Buku' },
+        { id: 'btnPeminjaman', label: 'Peminjaman' },
         { id: 'btnPengembalian', label: 'Pengembalian' },
     ];
 
