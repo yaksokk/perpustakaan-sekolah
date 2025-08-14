@@ -1,109 +1,178 @@
 import { useState, useEffect, useRef } from 'react';
 import { Navbar, Sidebar, Table } from "../../../components";
-import data from '../../../../data.json'
-import './anggota.css'
-import './kartuPerpus.css'
+import './anggota.css';
+import './kartuPerpus.css';
 import { FaCirclePlus, FaPenToSquare, FaTrash, FaIdCard, FaPrint } from "react-icons/fa6";
 
-const TambahAnggota = () => {
-    const [form, setForm] = useState({
-        username: "",
-        password: "",
-        name: "",
-        profesi: "",
-        role: "",
-    });
+const API_URL = 'http://localhost:5000/api/admin/anggota';
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+const Anggota = () => {
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [anggota, setAnggota] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [form, setForm] = useState({ username: '', password: '', name: '', profesi: '', role: 'user' });
 
-    const handleSubmit = () => {
-        // proses submit data pengguna, misal ke API atau state global
-        console.log("Data Anggota:", form);
-        alert("Anggota berhasil ditambahkan!");
-        setForm({
-            username: "",
-            password: "",
-            name: "",
-            profesi: "",
-            role: ""
-        });
-    };
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showCard, setShowCard] = useState(false);
+  const formRef = useRef(null);
 
-    return (
-        <div className="form-add-user">
-            <h3>Tambah Anggota</h3>
+  const fetchAnggota = async () => {
+    try {
+      const res = await fetch(`${API_URL}/all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      const data = await res.json();
+      setAnggota(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Gagal fetch anggota:', err);
+      setAnggota([]);
+    }
+  };
 
-            <label>Username</label>
-            <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={form.username}
-                onChange={handleChange}
-                required
-            />
-            <label>Password</label>
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={form.password}
-                onChange={handleChange}
-                required
-            />
+  useEffect(() => { fetchAnggota(); }, []);
 
-            <label>Nama</label>
-            <input
-                type="text"
-                name="name"
-                placeholder="Isi nama"
-                value={form.name}
-                onChange={handleChange}
-                required
-            />
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const method = isEditing ? 'PUT' : 'POST';
+      const endpoint = isEditing ? `${API_URL}/update/${editId}` : `${API_URL}/create`;
 
-            <label>Profesi</label>
-            <input
-                type="text"
-                name="profesi"
-                placeholder="Isi profesi"
-                value={form.profesi}
-                onChange={handleChange}
-                required
-            />
-            <label>Role</label>
-            <select
-                id='role'
-                name="role"
-                value={form.role}
-                onChange={handleChange}
-                required
-            >
-                <option value="">Pilih Role</option>
-                <option value="Operator">Operator</option>
-                <option value="User">User</option>
-            </select>
+      const res = await fetch(endpoint, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(form),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message);
+      alert(result.message);
+      fetchAnggota();
+      setForm({ username: '', password: '', name: '', profesi: '', role: 'user' });
+      setIsEditing(false);
+      setEditId(null);
+      setShowForm(false);
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  };
 
-            <button onClick={handleSubmit} className="btn-submit">
-                Tambah Anggota
-            </button>
+  const handleEdit = (user) => {
+    setForm({ username: user.username, password: user.password, name: user.name, profesi: user.profesi });
+    setIsEditing(true);
+    setEditId(user.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Yakin ingin menghapus anggota ini?')) return;
+    try {
+      const res = await fetch(`${API_URL}/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message);
+      alert(result.message);
+      fetchAnggota();
+    } catch (err) {
+      alert('Gagal hapus anggota: ' + err.message);
+    }
+  };
+
+  const filtered = anggota.filter(u => u.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const columns = [
+    { header: 'No', accessor: 'id' },
+    { header: 'Username', accessor: 'username' },
+    { header: 'Password', accessor: 'password' },
+    { header: 'Nama', accessor: 'name' },
+    { header: 'Profesi', accessor: 'profesi' },
+    { header: 'Role', accessor: 'role' },
+    {
+      header: 'Aksi',
+      render: (row) => (
+        <div className="aksi-buttons">
+          <button onClick={() => handleEdit(row)}><FaPenToSquare /></button>
+          <button onClick={() => handleDelete(row.id)}><FaTrash /></button>
+          <button onClick={() => { setSelectedUser(row); setShowCard(true); }}><FaIdCard /></button>
         </div>
-    );
+      )
+    }
+  ];
+
+  return (
+    <>
+      <Navbar onToggleMenu={() => setShowSidebar(!showSidebar)} />
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <Sidebar isActive={showSidebar} />
+        <main id="users" className="content">
+          <h1>Data Anggota</h1>
+          <input
+            id='searchUser'
+            type="text"
+            placeholder="Cari nama..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className='btnAddUser' onClick={() => {
+            setShowForm(true);
+            setIsEditing(false);
+            setForm({ username: '', password: '', name: '', profesi: '' });
+          }}>
+            <FaCirclePlus /> Tambah Anggota
+          </button>
+
+          <Table columns={columns} data={filtered} />
+
+          {showForm && (
+            <div className="overlayAddUser">
+              <div className="contentAddUser" ref={formRef}>
+                <button className="close-button" onClick={() => setShowForm(false)}>×</button>
+                <form className="form-add-user" onSubmit={handleSubmit}>
+                  <h3>{isEditing ? 'Edit' : 'Tambah'} Anggota</h3>
+                  <label>Username</label>
+                  <input name="username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} required />
+                  <label>Password</label>
+                  <input name="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+                  <label>Nama</label>
+                  <input name="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+                  <label>Profesi</label>
+                  <input name="profesi" value={form.profesi} onChange={(e) => setForm({ ...form, profesi: e.target.value })} required />
+                  <button type="submit" className="btn-submit">{isEditing ? 'Perbarui' : 'Tambah'}</button>
+                </form>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+      {showCard && selectedUser && (
+        <LibraryCard user={selectedUser} onClose={() => setShowCard(false)} />
+      )}
+    </>
+  );
 };
 
+
 const LibraryCard = ({ user, onClose }) => {
-    const cardRef = useRef(null);
+  const cardRef = useRef(null);
 
-    const handlePrint = () => {
-        const printContent = cardRef.current;
-        const originalContent = document.body.innerHTML;
+  const handlePrint = () => {
+    const printContent = cardRef.current;
+    const originalContent = document.body.innerHTML;
 
-        // Create a new window for printing
-        const printWindow = window.open('', '', 'height=600,width=800');
-        printWindow.document.write('<html><head><title>Kartu Anggota Perpustakaan</title>');
-        printWindow.document.write(`
+    // Create a new window for printing
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Kartu Anggota Perpustakaan</title>');
+    printWindow.document.write(`
             <style>
                 body { 
                     margin: 0; 
@@ -191,215 +260,70 @@ const LibraryCard = ({ user, onClose }) => {
                 }
             </style>
         `);
-        printWindow.document.write('</head><body>');
-        printWindow.document.write(printContent.outerHTML);
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-    };
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(printContent.outerHTML);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
 
-    return (
-        <div className="card-perpus-overlay">
-            <div className="card-perpus-container">
-                <button className="card-perpus-close-button" onClick={onClose}>×</button>
+  return (
+    <div className="card-perpus-overlay">
+      <div className="card-perpus-container">
+        <button className="card-perpus-close-button" onClick={onClose}>×</button>
 
-                <div ref={cardRef} className="library-card-perpus">
-                    <div className="card-perpus-header">
-                        <h2>SD GMIM KANEYAN</h2>
-                        <p>Kaneyan, Tareran, Minahasa Selatan, Sulawesi Utara</p>
-                    </div>
+        <div ref={cardRef} className="library-card-perpus">
+          <div className="card-perpus-header">
+            <h2>SD GMIM KANEYAN</h2>
+            <p>Kaneyan, Tareran, Minahasa Selatan, Sulawesi Utara</p>
+          </div>
 
-                    <div className="card-perpus-body">
-                        <h3>KARTU ANGGOTA</h3>
-                        <div className="card-perpus-info">
-                            <div className="info-left">
-                                <div className="info-row">
-                                    <span className="label">No. Anggota</span>
-                                    <span className="colon">:</span>
-                                    <span className="value">{user.id || 1}</span>
-                                </div>
-                                <div className="info-row">
-                                    <span className="label">Nama</span>
-                                    <span className="colon">:</span>
-                                    <span className="value">{user.name}</span>
-                                </div>
-                                <div className="info-row">
-                                    <span className="label">No. Induk/NISN</span>
-                                    <span className="colon">:</span>
-                                    <span className="value">{user.username}</span>
-                                </div>
-                            </div>
-                            <div className="photo-placeholder">
-                                {/* Photo placeholder */}
-                            </div>
-                        </div>
-
-                        <div className="card-perpus-footer">
-                            <div className="signature-section">
-                                <p>Mengetahui,</p>
-                                <p>Kepala Sekolah</p>
-                                <div className="signature-space"></div>
-                                <p className="signature-name">NIP. ________________</p>
-                            </div>
-                        </div>
-                    </div>
+          <div className="card-perpus-body">
+            <h3>KARTU ANGGOTA</h3>
+            <div className="card-perpus-info">
+              <div className="info-left">
+                <div className="info-row">
+                  <span className="label">No. Anggota</span>
+                  <span className="colon">:</span>
+                  <span className="value">{user.id || 1}</span>
                 </div>
-
-                <div className="card-actions">
-                    <button className="btn-print" onClick={handlePrint}>
-                        <FaPrint /> Print Kartu
-                    </button>
+                <div className="info-row">
+                  <span className="label">Nama</span>
+                  <span className="colon">:</span>
+                  <span className="value">{user.name}</span>
                 </div>
+                <div className="info-row">
+                  <span className="label">No. Induk/NISN</span>
+                  <span className="colon">:</span>
+                  <span className="value">{user.username}</span>
+                </div>
+              </div>
+              <div className="photo-placeholder">
+                {/* Photo placeholder */}
+              </div>
             </div>
+
+            <div className="card-perpus-footer">
+              <div className="signature-section">
+                <p>Mengetahui,</p>
+                <p>Kepala Sekolah</p>
+                <div className="signature-space"></div>
+                <p className="signature-name">NIP. ________________</p>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+
+        <div className="card-actions">
+          <button className="btn-print" onClick={handlePrint}>
+            <FaPrint /> Print Kartu
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-function Anggota() {
-    const [showSidebar, setShowSidebar] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [showAddUser, setShowAddUser] = useState(false);
-    const [showCard, setShowCard] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const formRef = useRef(null);
-
-    const users = data.users
-    const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const handleEdit = (row) => {
-        console.log("Edit user:", row);
-        // Implement edit functionality
-    };
-
-    const handleDelete = (row) => {
-        console.log("Delete user:", row);
-        // Implement delete functionality
-    };
-
-    const handleShowCard = (user) => {
-        setSelectedUser(user);
-        setShowCard(true);
-    };
-
-    const columns = [
-        { header: "No", render: (_, idx) => idx + 1 },
-        { header: "Username", accessor: "username" },
-        { header: "Password", accessor: "password" },
-        { header: "Name", accessor: "name" },
-        { header: "Profesi", accessor: "profesi" },
-        {
-            header: "Aksi",
-            render: (row) => (
-                <div>
-                    <button
-                        onClick={() => handleEdit(row)}
-                        style={{
-                            padding: '6px 12px',
-                            borderRadius: '4px',
-                            backgroundColor: '#28a745',
-                            color: 'white',
-                            marginRight: '8px',
-                            border: 'none',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <FaPenToSquare className="icon" title='Edit' />
-                    </button>
-                    <button
-                        onClick={() => handleDelete(row)}
-                        style={{
-                            padding: '6px 12px',
-                            borderRadius: '4px',
-                            backgroundColor: '#dc3545',
-                            color: 'white',
-                            marginRight: '8px',
-                            border: 'none',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <FaTrash className="icon" title='Hapus' />
-                    </button>
-                    <button
-                        onClick={() => handleShowCard(row)}
-                        style={{
-                            padding: '6px 12px',
-                            borderRadius: '4px',
-                            backgroundColor: '#007bff',
-                            color: 'white',
-                            border: 'none',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <FaIdCard className="icon" title='Kartu Anggota' />
-                    </button>
-                </div>
-            )
-        }
-    ];
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (formRef.current && !formRef.current.contains(event.target)) {
-                setShowAddUser(false);
-            }
-        };
-        if (showAddUser) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [showAddUser]);
-
-    const handleToReturnClick = () => {
-        setShowAddUser(false);
-    };
-
-    return (
-        <>
-            <Navbar onToggleMenu={() => setShowSidebar(!showSidebar)} />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <Sidebar isActive={showSidebar} />
-                <main id="users" className="content">
-                    <h1>Daftar Anggota</h1>
-                    <div>
-                        <input
-                            id='searchUser'
-                            type="text"
-                            placeholder="Cari anggota berdasarkan nama..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <button
-                            className='btnAddUser'
-                            onClick={() => setShowAddUser(prev => !prev)}
-                        >
-                            <FaCirclePlus className="icon" /> Tambah Anggota
-                        </button>
-                    </div>
-                    <div id='tableUsers'>
-                        <Table columns={columns} data={filteredUsers} />
-                    </div>
-                    {showAddUser && (
-                        <div className="overlayAddUser" onClose={() => setShowAddUser(false)}>
-                            <div id="formAddUser" ref={formRef} className="contentAddUser">
-                                <button className="close-button" onClick={handleToReturnClick}>×</button>
-                                <TambahAnggota />
-                            </div>
-                        </div>
-                    )}
-                    {showCard && selectedUser && (
-                        <LibraryCard
-                            user={selectedUser}
-                            onClose={() => setShowCard(false)}
-                        />
-                    )}
-                </main>
-            </div>
-        </>
-    )
-}
-
-export default Anggota
+export default Anggota;

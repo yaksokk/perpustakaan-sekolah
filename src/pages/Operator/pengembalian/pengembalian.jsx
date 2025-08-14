@@ -1,26 +1,33 @@
-import './pengembalian.css'
+import './pengembalian.css';
 import { Navbar, Sidebar } from '../../../components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../../context';
 
 function Pengembalian() {
     const [showSidebar, setShowSidebar] = useState(true);
+    const { user } = useAuth();
 
-    // State untuk form peminjaman
     const [formData, setFormData] = useState({
         judulBuku: '',
-        namaPeminjam: '',
-        tanggalPinjam: '',
+        usernamePeminjam: '',
         tanggalKembali: ''
     });
 
-    // Data dummy untuk dropdown buku
-    const daftarBuku = [
-        { id: 1, judul: 'Laskar Pelangi' },
-        { id: 2, judul: 'Bumi Manusia' },
-        { id: 3, judul: 'Ronggeng Dukuh Paruk' },
-        { id: 4, judul: 'Ayat-Ayat Cinta' },
-        { id: 5, judul: 'Negeri 5 Menara' }
-    ];
+    const [daftarBuku, setDaftarBuku] = useState([]);
+
+    useEffect(() => {
+        const fetchBuku = async () => {
+            try {
+                const res = await fetch('/api/books/all');
+                const data = await res.json();
+                setDaftarBuku(data);
+            } catch (err) {
+                console.error('Gagal memuat daftar buku:', err);
+            }
+        };
+
+        fetchBuku();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -30,41 +37,45 @@ function Pengembalian() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validasi form
-        if (!formData.judulBuku || !formData.namaPeminjam || !formData.tanggalPinjam || !formData.tanggalKembali) {
+        const { judulBuku, usernamePeminjam, tanggalKembali } = formData;
+
+        if (!judulBuku || !usernamePeminjam || !tanggalKembali) {
             alert('Mohon lengkapi semua field!');
             return;
         }
 
-        // Validasi tanggal
-        const tanggalPinjam = new Date(formData.tanggalPinjam);
-        const tanggalKembali = new Date(formData.tanggalKembali);
+        try {
+            const response = await fetch('/api/pengembalian', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    judulBuku,
+                    username_peminjam: usernamePeminjam,
+                    tanggal_pengembalian_aktual: tanggalKembali
+                })
+            });
 
-        if (tanggalKembali <= tanggalPinjam) {
-            alert('Tanggal pengembalian harus setelah tanggal peminjaman!');
-            return;
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message);
+
+            alert('Pengembalian berhasil diproses!');
+            handleReset();
+        } catch (error) {
+            alert('Error: ' + error.message);
+            console.error('Pengembalian error:', error);
         }
-
-        console.log('Data Peminjaman:', formData);
-        alert('Data peminjaman berhasil disimpan!');
-
-        // Reset form
-        setFormData({
-            judulBuku: '',
-            namaPeminjam: '',
-            tanggalPinjam: '',
-            tanggalKembali: ''
-        });
     };
 
     const handleReset = () => {
         setFormData({
             judulBuku: '',
-            namaPeminjam: '',
-            tanggalPinjam: '',
+            usernamePeminjam: '',
             tanggalKembali: ''
         });
     };
@@ -79,7 +90,7 @@ function Pengembalian() {
                         <h1>PENGEMBALIAN BUKU</h1>
                         <div className="form-container">
                             <div className="form-header">
-                                <h2>Pengembalian Buku</h2>
+                                <h2>Form Pengembalian Buku</h2>
                             </div>
                             <form onSubmit={handleSubmit} className="form-content">
                                 <div className="form-group">
@@ -90,8 +101,9 @@ function Pengembalian() {
                                         value={formData.judulBuku}
                                         onChange={handleInputChange}
                                         className="form-control"
+                                        required
                                     >
-                                        <option value="">masukkan judul buku</option>
+                                        <option value="">Pilih buku</option>
                                         {daftarBuku.map(buku => (
                                             <option key={buku.id} value={buku.judul}>
                                                 {buku.judul}
@@ -101,37 +113,21 @@ function Pengembalian() {
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="namaPeminjam">Nama Peminjam</label>
-                                    <select
-                                        id="namaPeminjam"
-                                        name="namaPeminjam"
-                                        value={formData.namaPeminjam}
-                                        onChange={handleInputChange}
-                                        className="form-control"
-                                    >
-                                        <option value="">masukkan nama</option>
-                                        <option value="Ahmad Fauzi">Ahmad Fauzi</option>
-                                        <option value="Siti Nurhaliza">Siti Nurhaliza</option>
-                                        <option value="Budi Santoso">Budi Santoso</option>
-                                        <option value="Rina Handayani">Rina Handayani</option>
-                                    </select>
-                                </div>
-
-                                <div className="form-group">
-                                    <label htmlFor="tanggalPinjam">Tanggal di pinjam</label>
+                                    <label htmlFor="usernamePeminjam">Username Peminjam</label>
                                     <input
-                                        type="date"
-                                        id="tanggalPinjam"
-                                        name="tanggalPinjam"
-                                        value={formData.tanggalPinjam}
+                                        type="text"
+                                        id="usernamePeminjam"
+                                        name="usernamePeminjam"
+                                        value={formData.usernamePeminjam}
                                         onChange={handleInputChange}
-                                        className="form-input date-input"
+                                        className="form-input"
+                                        placeholder="Masukkan username peminjam"
                                         required
                                     />
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="tanggalKembali">Tanggal di kembalikan</label>
+                                    <label htmlFor="tanggalKembali">Tanggal Dikembalikan</label>
                                     <input
                                         type="date"
                                         id="tanggalKembali"
@@ -144,7 +140,7 @@ function Pengembalian() {
                                 </div>
 
                                 <div className="form-actions">
-                                    <button type="button" onClick={handleReset} className="btn-kembali">
+                                    <button type="submit" className="btn-kembali">
                                         KEMBALIKAN
                                     </button>
                                     <button type="button" onClick={handleReset} className="btn-batal">
@@ -157,7 +153,7 @@ function Pengembalian() {
                 </main>
             </div>
         </>
-    )
+    );
 }
 
-export default Pengembalian
+export default Pengembalian;

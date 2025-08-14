@@ -131,9 +131,7 @@
     margin-bottom: 0;
 }
 
-.form-add-user input[type="text"],
-.form-add-user input[type="number"],
-.form-add-user input[type="password"],
+.form-add-user input,
 .form-add-user select {
     margin: 7px 0 14px;
     width: 100%;

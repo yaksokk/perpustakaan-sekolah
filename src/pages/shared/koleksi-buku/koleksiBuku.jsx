@@ -1,415 +1,408 @@
+// ✅ koleksiBuku.jsx (CRUD Lengkap dengan Edit dan Delete)
 import './koleksiBuku.css';
-import "./tambahBuku.css";
-import data from '../../../../data.json';
+import './tambahBuku.css';
+import { usePage } from '../../../context';
 import { Navbar, Sidebar } from '../../../components';
-import Table from '../../../components/shared/table/table'
+import Table from '../../../components/shared/table/table';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { FaCirclePlus } from "react-icons/fa6";
+import { FaCirclePlus, FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import { useAuth } from '../../../context';
 
-const TambahBuku = () => {
-    const [form, setForm] = useState({
-        judul: "",
-        gambar: "",
-        penulis: "",
-        tahun: "",
-        kategori: "",
-        kode: "",
-        rak: "",
-        sinopsis: "",
-    });
-
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // proses submit data buku, misal ke API atau state global
-        console.log("Data Buku:", form);
-        alert("Buku berhasil ditambahkan!");
-        setForm({
-            judul: "",
-            gambar: "",
-            penulis: "",
-            tahun: "",
-            kategori: "",
-            kode: "",
-            rak: "",
-            sinopsis: "",
-        });
-    };
-
-    return (
-        <form className="form-tambah-buku" onSubmit={handleSubmit}>
-            <h3>Tambah Buku</h3>
-
-            <label>Judul Buku</label>
-            <input
-                type="text"
-                name="judul"
-                placeholder="isi judul buku"
-                value={form.judul}
-                onChange={handleChange}
-                required
-            />
-
-            <label>Gambar</label>
-            <input
-                type="file"
-                name="gambar"
-                value={form.image}
-                onChange={handleChange}
-                required
-            />
-
-            <label>Penulis</label>
-            <input
-                type="text"
-                name="penulis"
-                placeholder="isi penulis"
-                value={form.penulis}
-                onChange={handleChange}
-                required
-            />
-
-            <label>Tahun Terbit</label>
-            <input
-                type="text"
-                name="tahun"
-                placeholder="isi tahun terbit"
-                value={form.tahun}
-                onChange={handleChange}
-                required
-            />
-
-            <label>Kategori</label>
-            <input
-                type="text"
-                name="kategori"
-                placeholder="isi kategori"
-                value={form.kategori}
-                onChange={handleChange}
-                required
-            />
-
-            <label>Kode Buku</label>
-            <input
-                type="text"
-                name="kode"
-                placeholder="isi kode"
-                value={form.kode}
-                onChange={handleChange}
-                required
-            />
-
-            <label>Rak Buku</label>
-            <input
-                type="text"
-                name="rak"
-                placeholder="isi rak buku"
-                value={form.rak}
-                onChange={handleChange}
-                required
-            />
-
-            <label>Sinopsis</label>
-            <textarea
-                name="sinopsis"
-                placeholder="isi sinopsis"
-                value={form.sinopsis}
-                onChange={handleChange}
-                rows="6"
-                required
-            ></textarea>
-
-            <button type="submit" className="btn-submit">
-                Tambah Buku
-            </button>
-        </form>
-    );
-};
+const API_URL = 'http://localhost:5000/api/books';
 
 function KoleksiBuku() {
-    const [showSidebar, setShowSidebar] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [showTambahBuku, setShowTambahBuku] = useState(false);
-    const [showSynopsis, setShowSynopsis] = useState(null);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
-    const formRef = useRef(null);
-    const synopsisRef = useRef(null);
+  const { navigateTo } = usePage();
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [showSynopsis, setShowSynopsis] = useState(null);
+  const [books, setBooks] = useState([]);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [form, setForm] = useState({
+    judul: '', penulis: '', tahun: '', kategori: '', kode: '', rak: '', sinopsis: '', penerbit: '', total: '', status: '', tersedia: ''
+  });
 
-    const books = data.buku;
-    const originalData = useMemo(() => [...books], [books]);
+  const formRef = useRef(null);
+  const synopsisRef = useRef(null);
+  const { token } = useAuth();
 
-    // Generic sorting function
-    const sortData = useCallback((data, key, direction) => {
-        if (!key || !direction) return data;
-
-        return [...data].sort((a, b) => {
-            let aValue = a[key];
-            let bValue = b[key];
-
-            // Handle status sorting
-            if (key === 'available') {
-                aValue = a.available ? 'Tersedia' : 'Dipinjam';
-                bValue = b.available ? 'Tersedia' : 'Dipinjam';
-            }
-
-            // Handle numeric values (year)
-            if (key === 'year') {
-                aValue = parseInt(aValue) || 0;
-                bValue = parseInt(bValue) || 0;
-            }
-
-            // Handle string values
-            if (typeof aValue === 'string') {
-                aValue = aValue.toLowerCase();
-                bValue = bValue.toLowerCase();
-            }
-
-            if (aValue < bValue) {
-                return direction === 'asc' ? -1 : 1;
-            }
-            if (aValue > bValue) {
-                return direction === 'asc' ? 1 : -1;
-            }
-            return 0;
-        });
-    }, []);
-
-    // Handle sorting with 3-stage cycle
-    const handleSort = useCallback((key) => {
-        setSortConfig(prevConfig => {
-            if (prevConfig.key !== key) {
-                // New column, start with ascending
-                return { key, direction: 'asc' };
-            } else if (prevConfig.direction === 'asc') {
-                // Same column, ascending -> descending
-                return { key, direction: 'desc' };
-            } else if (prevConfig.direction === 'desc') {
-                // Same column, descending -> reset
-                return { key: null, direction: null };
-            }
-            // Should not reach here, but fallback to ascending
-            return { key, direction: 'asc' };
-        });
-    }, []);
-
-    // Get sort icon
-    const getSortIcon = useCallback((columnKey) => {
-        if (sortConfig.key === columnKey) {
-            if (sortConfig.direction === 'asc') return ' ↑';
-            if (sortConfig.direction === 'desc') return ' ↓';
-        }
-        return ' ↕';
-    }, [sortConfig]);
-
-    // Filter and sort data
-    const processedBooks = useMemo(() => {
-        const filtered = originalData.filter(book =>
-            book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            book.category.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
-        return sortData(filtered, sortConfig.key, sortConfig.direction);
-    }, [originalData, searchTerm, sortConfig, sortData]);
-
-    const columns = [
-        { header: "No", render: (_, idx) => idx + 1 },
-        {
-            header: "Judul Buku",
-            accessor: ["title", "image"],
-            sortable: true,
-            onClick: () => handleSort('title'),
-            sortIcon: getSortIcon('title'),
-            render: (row) => (<>
-                <img
-                    src={row.image}
-                    alt={row.title}
-                />
-                <span>{row.title}</span>
-            </>
-            ),
+  const fetchBooks = async () => {
+    try {
+      const res = await fetch(`${API_URL}/all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        {
-            header: "Penulis",
-            accessor: "author",
-            sortable: true,
-            onClick: () => handleSort('author'),
-            sortIcon: getSortIcon('author')
-        },
-        {
-            header: "Tahun",
-            accessor: "year",
-            sortable: true,
-            onClick: () => handleSort('year'),
-            sortIcon: getSortIcon('year')
-        },
-        { header: "Kode Buku", accessor: "code" },
-        { header: "Rak Buku", accessor: "rack" },
-        {
-            header: "Kategori",
-            accessor: "category",
-            sortable: true,
-            onClick: () => handleSort('category'),
-            sortIcon: getSortIcon('category')
-        },
-        {
-            header: "Sinopsis",
-            render: (row) => (
-                <button
-                    onClick={() => setShowSynopsis(row.id)}
-                    aria-label="Lihat sinopsis"
-                    style={{ border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }}
-                >📖</button>
-            )
-        },
-        {
-            header: "Total Buku",
-            accessor: "BooksTotal",
-        },
-        {
-            header: "Status",
-            sortable: true,
-            onClick: () => handleSort('available'),
-            sortIcon: getSortIcon('available'),
-            render: (row) => (
-                <span style={{
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    backgroundColor: row.available ? '#d4edda' : '#f8d7da',
-                    color: row.available ? '#155724' : '#721c24',
-                    fontSize: '12px'
-                }}>
-                    {row.available ? 'Tersedia' : 'Dipinjam'}
-                </span>
-            )
-        },
-        {
-            header: "Tanggal Tersedia",
-            accessor: "availableDate",
-        },
-        {
-            header: "Aksi",
-            render: (row) => (
-                <button
-                    disabled={!row.available}
-                    style={{
-                        padding: '6px 12px',
-                        borderRadius: '4px',
-                        backgroundColor: row.available ? '#007bff' : '#6c757d',
-                        color: 'white'
-                    }}
-                >
-                    {row.available ? 'Pinjam' : 'Tidak Dapat Dipinjam'}
-                </button>
-            )
-        }
-    ];
+      });
+      const data = await res.json();
+      setBooks(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Gagal fetch buku:', err);
+      setBooks([]);
+    }
+  };
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (synopsisRef.current && !synopsisRef.current.contains(event.target)) {
-                setShowSynopsis(null);
-            }
-        };
-        if (showSynopsis !== null) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [showSynopsis]);
+  useEffect(() => { fetchBooks(); }, []);
 
-    useEffect(() => {
-        const tableDiv = document.getElementById("tableBuku");
-        if (showTambahBuku) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "auto";
-            if (tableDiv) {
-                tableDiv.style.overflowX = "auto";
-            }
-        }
-        return () => {
-            document.body.style.overflow = "auto";
-            if (tableDiv) {
-                tableDiv.style.overflowX = "auto";
-            }
-        };
-    }, [showTambahBuku]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const method = isEditing ? 'PUT' : 'POST';
+      const endpoint = isEditing ? `${API_URL}/update/${editId}` : `${API_URL}/create`;
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (formRef.current && !formRef.current.contains(event.target)) {
-                setShowTambahBuku(false);
-            }
-        };
-        if (showTambahBuku) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [showTambahBuku]);
+      const res = await fetch(endpoint, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(form),
+      });
 
-    return (
-        <>
-            <Navbar onToggleMenu={() => setShowSidebar(!showSidebar)} />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <Sidebar isActive={showSidebar} />
-                <main id='koleksiBuku' className='content' style={{ marginTop: '56px', padding: '20px' }}>
-                    <section id="koleksi">
-                        <h1>Koleksi Buku Perpustakaan</h1>
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Cari buku berdasarkan judul, penulis, atau kategori..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            <button
-                                className='btnTambahBuku'
-                                onClick={() => setShowTambahBuku(prev => !prev)}
-                            >
-                                <FaCirclePlus className="icon" /> Tambah Buku
-                            </button>
-                        </div>
-                        <div id='tableBuku'>
-                            <Table columns={columns} data={processedBooks} />
-                        </div>
-                        {showSynopsis !== null && (
-                            <div className="modal-sinopsis-overlay">
-                                <div className="modal-sinopsis-content" ref={synopsisRef}>
-                                    <h2>Sinopsis</h2>
-                                    <p>{books.find(b => b.id === showSynopsis)?.synopsis}</p>
-                                    <button onClick={() => setShowSynopsis(null)}>Tutup</button>
-                                </div>
-                            </div>
-                        )}
-                        <div style={{ marginTop: '20px', fontSize: '14px', color: '#6c757d' }}>
-                            Menampilkan {processedBooks.length} dari {books.length} buku
-                            {sortConfig.key && (
-                                <span style={{ marginLeft: '10px' }}>
-                                    | Diurutkan berdasarkan: {
-                                        sortConfig.key === 'title' ? 'Judul Buku' :
-                                            sortConfig.key === 'author' ? 'Penulis' :
-                                                sortConfig.key === 'year' ? 'Tahun' :
-                                                    sortConfig.key === 'category' ? 'Kategori' :
-                                                        sortConfig.key === 'available' ? 'Status' : sortConfig.key
-                                    } ({sortConfig.direction === 'asc' ? 'A-Z' : 'Z-A'})
-                                </span>
-                            )}
-                        </div>
-                    </section>
-                    {showTambahBuku && (
-                        <div className="overlayTambahBuku">
-                            <div id="formTambahBuku" ref={formRef} className="contentTambahBuku">
-                                <TambahBuku />
-                            </div>
-                        </div>
-                    )}
-                </main>
-            </div>
-        </>
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.message || 'Gagal menyimpan buku');
+      }
+
+      alert(result.message || (isEditing ? 'Buku berhasil diperbarui!' : 'Buku berhasil ditambahkan!'));
+      fetchBooks();
+      resetForm();
+      setIsEditing(false);
+      setEditId(null);
+      setShowForm(false);
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  };
+
+  const handleEdit = (book) => {
+    setForm({
+      judul: book.judul || '',
+      penulis: book.penulis || '',
+      tahun: book.tahun || '',
+      kategori: book.kategori || '',
+      kode: book.kode || '',
+      rak: book.rak || '',
+      sinopsis: book.sinopsis || '',
+      penerbit: book.penerbit || '',
+      total: book.total || '',
+      status: book.status || '',
+      tersedia: book.tersedia || ''
+    });
+    setIsEditing(true);
+    setEditId(book.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Yakin ingin menghapus buku ini?')) return;
+
+    try {
+      const res = await fetch(`${API_URL}/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.message || 'Gagal menghapus buku');
+      }
+
+      alert(result.message || 'Buku berhasil dihapus!');
+      fetchBooks();
+    } catch (err) {
+      alert('Gagal hapus buku: ' + err.message);
+    }
+  };
+
+  const handlePinjam = (book) => {
+    // Simpan data buku yang akan dipinjam ke localStorage untuk digunakan di halaman peminjaman
+    const bookData = {
+      id: book.id,
+      judul: book.judul,
+      penulis: book.penulis,
+      kategori: book.kategori
+    };
+    localStorage.setItem('selectedBook', JSON.stringify(bookData));
+
+    // Navigate ke halaman peminjaman
+    navigateTo('btnPeminjaman');
+  };
+
+  const resetForm = () => {
+    setForm({
+      judul: '', penulis: '', tahun: '', kategori: '', kode: '', rak: '', sinopsis: '', penerbit: '', total: '', status: '', tersedia: ''
+    });
+    setIsEditing(false);
+    setEditId(null);
+    setShowForm(false);
+  };
+
+  const handleAddNew = () => {
+    setForm({
+      judul: '', penulis: '', tahun: '', kategori: '', kode: '', rak: '', sinopsis: '', penerbit: '', total: '', status: '', tersedia: ''
+    });
+    setIsEditing(false);
+    setEditId(null);
+    setShowForm(true);
+  };
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // Fungsi untuk menentukan status berdasarkan jumlah tersedia
+  const getBookStatus = (tersedia) => {
+    return tersedia >= 1 ? 'tersedia' : 'tidak_tersedia';
+  };
+
+  // Fungsi untuk menentukan apakah buku bisa dipinjam
+  const isBookAvailable = (tersedia) => {
+    return tersedia >= 1;
+  };
+
+  const processedBooks = useMemo(() => {
+    const filtered = books.filter((b) =>
+      (b?.judul || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (b?.penulis || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (b?.penerbit || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (b?.kategori || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    // Tambahkan status dinamis dan ketersediaan untuk setiap buku
+    const booksWithStatus = filtered.map(book => ({
+      ...book,
+      status: getBookStatus(book.tersedia),
+      available: isBookAvailable(book.tersedia)
+    }));
+
+    if (sortConfig.key && sortConfig.direction) {
+      return [...booksWithStatus].sort((a, b) => {
+        let aVal = a[sortConfig.key];
+        let bVal = b[sortConfig.key];
+        if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+        if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return booksWithStatus;
+  }, [books, searchTerm, sortConfig]);
+
+  const handleSort = useCallback((key) => {
+    setSortConfig((prev) => {
+      if (prev.key !== key) return { key, direction: 'asc' };
+      if (prev.direction === 'asc') return { key, direction: 'desc' };
+      return { key: null, direction: null };
+    });
+  }, []);
+
+  const getSortIcon = useCallback((key) => {
+    if (sortConfig.key === key) return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
+    return ' ↕';
+  }, [sortConfig]);
+
+  const columns = [
+    { header: 'No', render: (row, index) => index + 1 },
+    { header: 'Judul', accessor: 'judul', sortable: true, onClick: () => handleSort('judul'), sortIcon: getSortIcon('judul') },
+    { header: 'Penulis', accessor: 'penulis', sortable: true, onClick: () => handleSort('penulis'), sortIcon: getSortIcon('penulis') },
+    { header: 'Penerbit', accessor: 'penerbit', sortable: true, onClick: () => handleSort('penerbit'), sortIcon: getSortIcon('penerbit') },
+    { header: 'Tahun', accessor: 'tahun', sortable: true, onClick: () => handleSort('tahun'), sortIcon: getSortIcon('tahun') },
+    { header: 'Kode', accessor: 'kode' },
+    { header: 'Rak', accessor: 'rak' },
+    { header: 'Kategori', accessor: 'kategori' },
+    { header: 'Sinopsis', render: (row) => <button onClick={() => setShowSynopsis(row.id)}>📖</button> },
+    { header: 'Total', accessor: 'total' },
+    {
+      header: 'Status',
+      render: (row) => (
+        <span style={{
+          color: row.status === 'tersedia' ? '#28a745' : '#dc3545',
+          fontWeight: 'bold'
+        }}>
+          {row.status === 'tersedia' ? 'Tersedia' : 'Tidak Tersedia'}
+        </span>
+      )
+    },
+    { header: 'Tersedia', accessor: 'tersedia' },
+    {
+      header: 'Aksi',
+      render: (row) => (
+        <div className="aksi-buttons">
+          <button
+            disabled={!row.available}
+            onClick={() => row.available ? handlePinjam(row) : null}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '4px',
+              backgroundColor: row.available ? '#007bff' : '#6c757d',
+              color: 'white',
+              cursor: row.available ? 'pointer' : 'not-allowed'
+            }}
+          >
+            {row.available ? 'Pinjam' : 'Tidak Dapat Dipinjam'}
+          </button>
+          <button onClick={() => handleEdit(row)}><FaPenToSquare /></button>
+          <button onClick={() => handleDelete(row.id)}><FaTrash /></button>
+        </div>
+      )
+    }
+  ];
+
+  return (
+    <>
+      <Navbar onToggleMenu={() => setShowSidebar((prev) => !prev)} />
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <Sidebar isActive={showSidebar} />
+        <main id="koleksiBuku" className="content" style={{ marginTop: '56px', padding: '20px' }}>
+          <section id="koleksi">
+            <h1>Koleksi Buku</h1>
+            <div>
+              <input
+                type="text"
+                placeholder="Cari buku..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button className="btnTambahBuku" onClick={handleAddNew}>
+                <FaCirclePlus className="icon" /> Tambah Buku
+              </button>
+            </div>
+            <div id="tableBuku">
+              <Table columns={columns} data={processedBooks} />
+            </div>
+
+            {/* Modal Sinopsis */}
+            {showSynopsis !== null && (
+              <div className="modal-sinopsis-overlay">
+                <div className="modal-sinopsis-content" ref={synopsisRef}>
+                  <h2>Sinopsis</h2>
+                  <p>{books.find((b) => b.id === showSynopsis)?.sinopsis}</p>
+                  <button onClick={() => setShowSynopsis(null)}>Tutup</button>
+                </div>
+              </div>
+            )}
+
+            {/* Form Tambah/Edit Buku */}
+            {showForm && (
+              <div className="overlayTambahBuku">
+                <div className="contentTambahBuku" ref={formRef}>
+                  <button className="close-button" onClick={resetForm}>×</button>
+                  <form className="form-tambah-buku" onSubmit={handleSubmit}>
+                    <h3>{isEditing ? 'Edit' : 'Tambah'} Buku</h3>
+
+                    <label>Judul Buku</label>
+                    <input
+                      type="text"
+                      name="judul"
+                      placeholder="isi judul buku"
+                      value={form.judul}
+                      onChange={handleChange}
+                      required
+                    />
+
+                    <label>Penulis</label>
+                    <input
+                      type="text"
+                      name="penulis"
+                      placeholder="isi penulis"
+                      value={form.penulis}
+                      onChange={handleChange}
+                      required
+                    />
+
+                    <label>Penerbit</label>
+                    <input
+                      type="text"
+                      name="penerbit"
+                      placeholder="isi penerbit"
+                      value={form.penerbit}
+                      onChange={handleChange}
+                    />
+
+                    <label>Tahun Terbit</label>
+                    <input
+                      type="text"
+                      name="tahun"
+                      placeholder="isi tahun terbit"
+                      value={form.tahun}
+                      onChange={handleChange}
+                      required
+                    />
+
+                    <label>Kategori</label>
+                    <input
+                      type="text"
+                      name="kategori"
+                      placeholder="isi kategori"
+                      value={form.kategori}
+                      onChange={handleChange}
+                      required
+                    />
+
+                    <label>Kode Buku</label>
+                    <input
+                      type="text"
+                      name="kode"
+                      placeholder="isi kode"
+                      value={form.kode}
+                      onChange={handleChange}
+                    />
+
+                    <label>Rak Buku</label>
+                    <input
+                      type="text"
+                      name="rak"
+                      placeholder="isi rak buku"
+                      value={form.rak}
+                      onChange={handleChange}
+                    />
+
+                    <label>Total Buku</label>
+                    <input
+                      type="number"
+                      name="total"
+                      placeholder="jumlah total buku"
+                      value={form.total}
+                      onChange={handleChange}
+                    />
+
+                    <label>Tersedia</label>
+                    <input
+                      type="number"
+                      name="tersedia"
+                      placeholder="jumlah buku tersedia"
+                      value={form.tersedia}
+                      onChange={handleChange}
+                    />
+
+                    <label>Sinopsis</label>
+                    <textarea
+                      name="sinopsis"
+                      placeholder="isi sinopsis"
+                      value={form.sinopsis}
+                      onChange={handleChange}
+                      rows="6"
+                    ></textarea>
+
+                    <button type="submit" className="btn-submit">
+                      {isEditing ? 'Perbarui' : 'Tambah'} Buku
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+          </section>
+        </main>
+      </div>
+    </>
+  );
 }
 
 export default KoleksiBuku;

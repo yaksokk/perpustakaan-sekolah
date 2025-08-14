@@ -57,30 +57,41 @@
 .overlayTambahBuku {
     position: fixed;
     top: 56px;
-    /* agar tidak menutupi navbar */
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.3);
-    /* form diatas */
     z-index: 1000;
     overflow-y: auto;
     margin-left: 200px;
     width: calc(100% - 200px);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
 }
 
 /* Container form tambah buku */
 .contentTambahBuku {
-    /* biarkan transparan, styling ada di formnya */
     background-color: transparent;
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
+    width: 80%;
     border-radius: 8px;
     position: relative;
     z-index: 1001;
-    border: 2px solid red;
+}
+
+#koleksiBuku .close-button {
+    position: absolute;
+    padding: 0;
+    top: 17px;
+    right: 17px;
+    background: #ff4081;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .modal-sinopsis-overlay {
@@ -109,3 +120,4 @@
     overflow-y: auto;
     color: #333;
 }
+

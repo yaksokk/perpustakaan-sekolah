@@ -30,5 +30,30 @@
             }
         ]
 
-    }]
+    }],
+    "login": [{
+            "success": true,
+            "message": "Login successful",
+            "data": {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRpbmRhIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTM0MTc3NTMsImV4cCI6MTc1MzUwNDE1M30.Xp6PwZXw1HWfLV9INX9CE5f-lBCaezgyIVeIExtnxXc",
+                "user": {
+                    "username": "dinda",
+                    "name": "Adinda ah-zahra",
+                    "role": "user"
+                }
+            }
+        },
+        {
+            "success": true,
+            "message": "Login successful",
+            "data": {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRoeWEiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1MzQxNzc2NSwiZXhwIjoxNzUzNTA0MTY1fQ.hP2AvSXxwBtsAQzboxJxdQN_2J8O01pYJdUCtpNi-R4",
+                "user": {
+                    "username": "thya",
+                    "name": "Shintya Aleng",
+                    "role": "user"
+                }
+            }
+        }
+    ]
 }
